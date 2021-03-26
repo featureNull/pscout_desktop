@@ -1,0 +1,73 @@
+syntax = "proto3";
+
+//
+// matcher service
+//
+service Database {
+    // abfrage, welche fov's gerendert zur verfuegung stehen
+    rpc GetCategories (GetCategoriesRequest) returns (GetCategoriesReply) {}
+
+    rpc GetModelsMetadata (GetModelsMetadataRequest) returns (GetModelsMetadataReply) {}
+
+    rpc GetStlData (GetStlDataRequest) returns (GetStlDataReply) {}
+}
+
+//
+// Language
+//
+enum Language {
+    UNDEFINED = 0;
+    DE = 1;             // german
+    EN = 2;             // english
+    ES = 3;             // spain
+    ZH = 4;             // chinese
+}
+
+
+//
+// Language
+//
+message GetCategoriesRequest {
+    Language language = 1;
+}
+
+//
+// categories
+//
+message GetCategoriesReply {
+    message Entity {
+        int64 id = 1;
+        string shortname = 2;
+        string longname = 3;
+    }
+    repeated Entity entities = 1;
+}
+
+//
+// ModelMetadataRequest
+//
+message GetModelsMetadataRequest {
+    Language language = 1;
+    repeated string artikelnums = 2;     // artikel nummern, wenn leer mueesen zwingend
+    repeated int64 modelids = 3;         // ids vorhanden sein
+}
+
+
+message GetModelsMetadataReply {
+    message Entity {
+        int64 id = 1;
+        string artikelnum = 2;
+        int64 categoryid = 3;
+        string shortdesc = 4;
+        string longdesc = 5;
+    }
+    repeated Entity entities = 1;
+}
+
+message GetStlDataRequest {
+    int64 modelid = 1;
+}
+
+message GetStlDataReply {
+    bytes data = 1;
+}

@@ -1,0 +1,193 @@
+syntax = "proto3";
+
+//
+// matcher service
+//
+service Matcher {
+    // abfrage, welche fov's gerendert zur verfuegung stehen
+    rpc GetFovs(EmptyMsg) returns (FovsReply) {}
+
+    // erzeugt eine neue session mit image
+    // bei einem barcode wird keine session eroeffnet
+    rpc OpenSession(OpenSessionRequest) returns (OpenSessionReply) {}
+
+    // wieder schliessen
+    rpc CloseSession(SessionRequest) returns (EmptyMsg) {}
+
+    // vordergrund mit rio rect suchen
+    rpc FindForeGround(FindForeGroundRequest) returns(ForeGroundReply) {}
+
+    // vordergrund korrektieren
+    rpc CorrectForeGround(CorrectForeGroundRequest) returns(ForeGroundReply) {}
+
+    // shiluoetten suchen (erste schnelle matcher stuffe
+    rpc EstimateCandidates(SessionRequest) returns(EstimateCandidatesReply) {}
+
+    // was suchen, schliesst auch die session
+    rpc SearchCandidates(SearchCandidatesRequest) returns(SearchCandidatesReply) {}
+
+    // zu test zwecken, alte 512x512 mit alpha images
+    rpc OldStyleMatching(OldStyleMatchingRequest) returns(SearchCandidatesReply) {}
+}
+
+//
+// geomtric primitives
+//
+message Point2D {
+    int32 x = 1;    // pixel X
+    int32 y = 2;    // pixel y
+}
+
+message Box2D {
+    int32 x = 1;    // pixel x
+    int32 y = 2;    // pixel y
+    int32 w = 3;    // pixel witdh
+    int32 h = 4;    // pixel height
+}
+
+//
+// no return data
+//
+message EmptyMsg {}
+
+//
+// no return data
+//
+message FovsReply {
+    repeated int32 fovs = 1;
+}
+
+//
+// multiple use
+//
+message SessionRequest {
+    string uuid = 1;
+}
+
+//
+// open a session with image
+//
+message OpenSessionRequest {
+    // jpg data
+    bytes image_data = 1;
+
+    // fov (16, 25, 35)
+    // 0 for unused
+    int32 fov = 2;
+
+    // pixels per mm
+    // 0 for unused
+    float ppmm = 3;
+
+    // wie denkt das smart phone, wie genau das photo ist
+    // UNKNOWN_SIZE = 0x00
+    // SIZE_ACCURATELY = 0x01
+    // SIZE_LESS_ACCURATE = 0x02
+    // SIZE_INACCURATE = 0x03
+    // SIZE_COULD_BE_BIGGER = 0x10
+    // SIZE_COULD_BE_SMALLER = 0x20
+    int32 size_flags = 4;
+
+    // device name (samsung...)
+    string device_name = 5;        
+
+    // focus abstand zu objekt (optional) 0 for unused
+    float lens_focus_distance = 6;
+}
+
+//
+// open a session with image
+//
+message OpenSessionReply {
+
+    message ObjectFg {
+        // session id (used for all other comm)
+        string uuid = 1;
+
+        // region of interest (fordergrund objekt, bei gefundenen barcode der barcode bereich)
+        Box2D roi = 2;
+    }
+
+    oneof result {
+        // es wurde ein objetk ohne vordergrund detektiert
+        ObjectFg object_fg = 1;
+
+        // barcode, wenn einer gefunden wurde, sonst leer
+        string barcode = 2;
+    }
+}
+
+//
+// erste suche mit roi rect
+//
+message FindForeGroundRequest {
+    // session id
+    string uuid = 1;
+
+    // region of interest (confirmed by user)
+    Box2D roi = 2;
+}
+
+//
+// user korrektur
+//
+message CorrectForeGroundRequest {
+
+    enum Type {
+        ADD = 0;        // add to foreground
+        REMOVE = 1;     // remove from background
+    }
+
+    // session id
+    string uuid = 1;
+
+    // korrekturlinie
+    repeated Point2D corline = 2;
+
+    // linienstearke (im Ausgangsbild)
+    float lineWidth = 3;
+
+    Type type = 4;
+}
+
+//
+// contour fuer alle kommandos mit 
+//
+message ForeGroundReply {
+    repeated Point2D contour = 1;
+}
+
+message EstimateCandidatesReply {
+	repeated int64 modelids = 1;
+}
+
+//
+// SearchCandidatesRequest
+//
+message SearchCandidatesRequest {
+    // session id
+    string uuid = 1;
+
+    // filter fuer modell ids (leer wenn alle gesucht werden sollen)
+    repeated int64 modelids = 2;
+
+    // wieviele sollens maximal werden
+    int32 maxCount = 3;
+}
+
+//
+// rueckgabe einer ernsten suche
+//
+message SearchCandidatesReply {
+    message Entity {
+        int64 modelid = 1;
+        float score = 2;
+    }
+    repeated Entity entities = 1;
+}
+
+
+message OldStyleMatchingRequest {
+    /// muss 512x512 mit alpha sein
+    bytes image_data = 1;
+}
