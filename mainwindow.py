@@ -2,12 +2,13 @@
 '''
 from PyQt5.QtWidgets import QMainWindow, QApplication, QShortcut, QFileDialog
 from PyQt5.QtGui import QPixmap, QKeySequence
+from PyQt5.QtCore import QRect
 from PyQt5 import QtGui
 
 from PyQt5.QtCore import Qt
 from PyQt5 import uic
 import qtawesome as qta
-from pictureviz import EditorMode
+from pictureviz import EditMode
 from resultwindow import ResultWindow
 
 
@@ -15,12 +16,14 @@ class MainWindow(QMainWindow):
     def __init__(self, *args, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)
         uic.loadUi('./ui/mainwindow.ui', self)
-
+        # piceditor verdrahten
+        self.picEditor.findContourRequested.connect(self.findContour)
+        self.picEditor.addContourRequested.connect(self.addContour)
+        self.picEditor.removeContourRequested.connect(self.removeContour)
         # load image button
         self.btnLoad.clicked.connect(self.openFileNameDialog)
         self.btnLoad.setIcon(qta.icon('fa5s.folder-open', color='gray'))
         self.actionLoad.triggered.connect(self.openFileNameDialog)
-
         # clipboard handling
         self.btnClipBoard.clicked.connect(self.copyFromClipboard)
         self.btnClipBoard.setIcon(qta.icon('fa5s.clipboard', color='gray'))
@@ -41,7 +44,7 @@ class MainWindow(QMainWindow):
         self.btnSearch.setIcon(qta.icon('fa5s.search', color='gray'))
         self.btnSearch.clicked.connect(self.searchModel)
 
-        self.updateToolbaricons(EditorMode.IDLE)
+        self.updateToolbaricons(EditMode.IDLE)
         self.picEditor.modeChanged.connect(self.updateToolbaricons)
 
         self.btnSettings.setIcon(qta.icon('fa5s.cog', color='gray'))
@@ -71,9 +74,8 @@ class MainWindow(QMainWindow):
         self.resultwnd.show()
 
     def loadPhoto(self, pixmap):
-        self.picEditor.photo = pixmap
-        self.picEditor.enterMode(EditorMode.IDLE)
-        self.picEditor.machmalSession(pixmap)
+        rect = QtGui.qApp.sessionManager.open(pixmap)
+        self.picEditor.setPhoto(pixmap, rect)
 
     def dragEnterEvent(self, e):
         if e.mimeData().hasUrls():
@@ -92,22 +94,38 @@ class MainWindow(QMainWindow):
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Escape:
-            self.picEditor.enterMode(EditorMode.IDLE)
+            self.picEditor.setMode(EditMode.IDLE)
 
     def enterMeasure(self):
-        self.picEditor.enterMode(EditorMode.MEASURE)
+        self.picEditor.setMode(EditMode.MEASURE)
 
     def enterSelectRoi(self):
-        self.picEditor.enterMode(EditorMode.SELECT_ROI)
+        self.picEditor.setMode(EditMode.ROI)
 
     def enterSelectFg(self):
-        self.picEditor.enterMode(EditorMode.SELECT_FG)
+        self.picEditor.setMode(EditMode.FG)
+
+    def findContour(self, rc: QRect):
+        self.picEditor.setMode(EditMode.FG)
+        sm = QtGui.qApp.sessionManager
+        cont = sm.findForeground(rc)
+        self.picEditor.updateContour(cont)
+
+    def addContour(self, polyline):
+        sm = QtGui.qApp.sessionManager
+        cont = sm.addForeground(polyline)
+        self.picEditor.updateContour(cont)
+
+    def removeContour(self, polyline):
+        sm = QtGui.qApp.sessionManager
+        cont = sm.removeForeground(polyline)
+        self.picEditor.updateContour(cont)
 
     def updateToolbaricons(self, mode):
         ctx = {
-            EditorMode.MEASURE: [self.btnMeasure, 'fa5s.ruler'],
-            EditorMode.SELECT_ROI: [self.btnRegion, 'fa5s.vector-square'],
-            EditorMode.SELECT_FG: [self.btnCutForeground, 'fa5s.draw-polygon']
+            EditMode.MEASURE: [self.btnMeasure, 'fa5s.ruler'],
+            EditMode.ROI: [self.btnRegion, 'fa5s.vector-square'],
+            EditMode.FG: [self.btnCutForeground, 'fa5s.draw-polygon']
         }
         for key in ctx.keys():
             color = 'white' if key == mode else 'gray'

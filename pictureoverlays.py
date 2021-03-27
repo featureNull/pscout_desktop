@@ -55,7 +55,7 @@ class AbstractOverlay(ABC):
         return trf
 
 
-class MeasureOverlay(AbstractOverlay):
+class MesOverlay(AbstractOverlay):
     '''Overlay for measure distances between image points
     '''
     def __init__(self, widget):
@@ -258,7 +258,7 @@ class RoiOverlay(AbstractOverlay):
             return Hit.NoHit
 
 
-class ContourOverlay(AbstractOverlay):
+class ContOverlay(AbstractOverlay):
     '''Definie contour item
     '''
     def __init__(self, widget):
