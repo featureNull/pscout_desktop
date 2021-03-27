@@ -77,3 +77,10 @@ def _build_word_list():
     textdict = dict.fromkeys(textlist)
     _wordlist = list(textdict)
     _wordlist_lowercase = [x.lower() for x in _wordlist]
+
+
+def get_stl_data(channel, modelid: int):
+    stub = metadata_pb2_grpc.DatabaseStub(channel)
+    request = metadata_pb2.GetStlDataRequest(modelid=modelid)
+    reply = stub.GetStlData(request)
+    return reply.data

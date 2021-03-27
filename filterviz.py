@@ -2,8 +2,8 @@
 '''
 from PyQt5.QtCore import pyqtSignal, Qt, QTimer
 from PyQt5.QtWidgets import (
-    QWidget, QVBoxLayout, QFrame, QToolButton,
-    QHBoxLayout, QCheckBox, QLabel, QSpacerItem, QSizePolicy, QLineEdit, QCompleter
+    QWidget, QVBoxLayout, QFrame, QToolButton, QHBoxLayout, QCheckBox, QLabel, 
+    QSpacerItem, QSizePolicy, QLineEdit, QCompleter
 )
 import qtawesome as qta
 import metadata
@@ -111,6 +111,7 @@ class FilterWidget(QWidget):
         completer = QCompleter(metadata._wordlist)
         _change_font(completer.popup())
         completer.setCaseSensitivity(Qt.CaseInsensitive)
+        completer.setFilterMode(Qt.MatchContains)
         le.setCompleter(completer)
         self.searchedit = le
 

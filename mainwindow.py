@@ -2,10 +2,13 @@
 '''
 from PyQt5.QtWidgets import QMainWindow, QApplication, QShortcut, QFileDialog
 from PyQt5.QtGui import QPixmap, QKeySequence
+from PyQt5 import QtGui
+
 from PyQt5.QtCore import Qt
 from PyQt5 import uic
 import qtawesome as qta
-from photowidget import Mode
+from pictureviz import EditorMode
+from resultwindow import ResultWindow
 
 
 class MainWindow(QMainWindow):
@@ -38,13 +41,11 @@ class MainWindow(QMainWindow):
         self.btnSearch.setIcon(qta.icon('fa5s.search', color='gray'))
         self.btnSearch.clicked.connect(self.searchModel)
 
-        self.updateToolbaricons(Mode.IDLE)
-        self.photoWidget.modeChanged.connect(self.updateToolbaricons)
+        self.updateToolbaricons(EditorMode.IDLE)
+        self.picEditor.modeChanged.connect(self.updateToolbaricons)
 
         self.btnSettings.setIcon(qta.icon('fa5s.cog', color='gray'))
-
         # self.contourChanged.connect(self.filterwidget.loadStatistics)
-
 
     def openFileNameDialog(self):
         filter = 'Image files (*.jpg *.png)'
@@ -61,13 +62,18 @@ class MainWindow(QMainWindow):
         self.loadPhoto(pixmap)
 
     def searchModel(self):
-        pass
+        modelids = [1, 2, 3, 4, 5, 6, 7]
+        lt = QtGui.qApp.stlloadthread
+        self.resultwnd = ResultWindow(modelids)
+        lt.receivedData.connect(self.resultwnd.loadStlContent)
+        lt.startLoading(modelids)
+        self.resultwnd.setGeometry(self.geometry())
+        self.resultwnd.show()
 
     def loadPhoto(self, pixmap):
-        w = self.photoWidget
-        w.photo = pixmap
-        w.enterMode(Mode.IDLE)
-        w.machmalSession(pixmap)
+        self.picEditor.photo = pixmap
+        self.picEditor.enterMode(EditorMode.IDLE)
+        self.picEditor.machmalSession(pixmap)
 
     def dragEnterEvent(self, e):
         if e.mimeData().hasUrls():
@@ -86,22 +92,22 @@ class MainWindow(QMainWindow):
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Escape:
-            self.photoWidget.enterMode(Mode.IDLE)
+            self.picEditor.enterMode(EditorMode.IDLE)
 
     def enterMeasure(self):
-        self.photoWidget.enterMode(Mode.MEASURE)
+        self.picEditor.enterMode(EditorMode.MEASURE)
 
     def enterSelectRoi(self):
-        self.photoWidget.enterMode(Mode.SELECT_ROI)
+        self.picEditor.enterMode(EditorMode.SELECT_ROI)
 
     def enterSelectFg(self):
-        self.photoWidget.enterMode(Mode.SELECT_FG)
+        self.picEditor.enterMode(EditorMode.SELECT_FG)
 
     def updateToolbaricons(self, mode):
         ctx = {
-            Mode.MEASURE: [self.btnMeasure, 'fa5s.ruler'],
-            Mode.SELECT_ROI: [self.btnRegion, 'fa5s.vector-square'],
-            Mode.SELECT_FG: [self.btnCutForeground, 'fa5s.draw-polygon']
+            EditorMode.MEASURE: [self.btnMeasure, 'fa5s.ruler'],
+            EditorMode.SELECT_ROI: [self.btnRegion, 'fa5s.vector-square'],
+            EditorMode.SELECT_FG: [self.btnCutForeground, 'fa5s.draw-polygon']
         }
         for key in ctx.keys():
             color = 'white' if key == mode else 'gray'

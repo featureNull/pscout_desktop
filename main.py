@@ -4,15 +4,7 @@ from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtCore import Qt
 import qdarkstyle
 from mainwindow import MainWindow
-import metadata
-import matching
-
-import grpc
-
-
-def _grpc_connect():
-    # todo settings hinzufuegen
-    return grpc.insecure_channel('localhost:50051')
+from application import Application
 
 
 def _show_splash_screen():
@@ -25,7 +17,7 @@ def _show_splash_screen():
 
 
 if __name__ == "__main__":
-    app = QApplication(sys.argv)
+    app = Application(sys.argv)
     logo = QPixmap('./ui/png/tasklogo.png')
     app.setWindowIcon(QIcon(logo))
 
@@ -33,13 +25,11 @@ if __name__ == "__main__":
     app.setStyleSheet(style)
 
     lbl = _show_splash_screen()
-    channel = _grpc_connect()
-    metadata.init(channel)
-    matching.init(channel)
+    app.connectServer()
     lbl.hide()
 
     wnd = MainWindow()
     wnd.show()
     app.exec_()
 
-    channel.close()
+    app.closeConnection()

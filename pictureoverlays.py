@@ -1,4 +1,4 @@
-'''interactive Overlay for photowidget
+'''interactive Overlay for pictureEditor
 '''
 from PyQt5.QtGui import QPen, QPolygonF, QColor, QFontMetrics
 from PyQt5.QtCore import QEvent, Qt, QLine, QPoint, QPointF, QRectF

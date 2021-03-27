@@ -7,11 +7,11 @@ from PyQt5.QtCore import Qt, pyqtSignal, QPoint, QRect
 from PyQt5.QtGui import QPainter, QPixmap, QBrush, QColor, QTransform, QPolygonF
 from PyQt5.QtWidgets import QWidget, QToolButton, QDialog
 import qtawesome as qta
-from photo_widget_overlay import MeasureOverlay, RoiOverlay, ContourOverlay
+from pictureoverlays import MeasureOverlay, RoiOverlay, ContourOverlay
 import matching
 
 
-class Mode(Enum):
+class EditorMode(Enum):
     IDLE = 0
     MEASURE = 1
     SELECT_ROI = 2
@@ -36,8 +36,8 @@ def _translate(rectsrc, rectdest, offset: QPoint) -> QTransform:
     return QTransform.fromTranslate(offset.x() + shiftx, offset.y() + shifty)
 
 
-class PhotoWidget(QWidget):
-    modeChanged = pyqtSignal(Mode)
+class PictureEditor(QWidget):
+    modeChanged = pyqtSignal(EditorMode)
     contourChanged = pyqtSignal()
 
     def __init__(self, *args, **kwargs):
@@ -46,7 +46,7 @@ class PhotoWidget(QWidget):
         self.photo = None
         self.currentZoom = 1.0
         self.offset = QPoint(0, 0)
-        self.mode = Mode.IDLE
+        self.mode = EditorMode.IDLE
 
         measureOverlay = MeasureOverlay(self)
         measureOverlay.doneCallBack = self.onMeasureDone
@@ -54,10 +54,10 @@ class PhotoWidget(QWidget):
         contourOverlay = ContourOverlay(self)
         contourOverlay.freehandDone = self.onFreeHandDone
         self.overlays = {
-            Mode.IDLE: None,
-            Mode.MEASURE: measureOverlay,
-            Mode.SELECT_ROI: roiOverlay,
-            Mode.SELECT_FG: contourOverlay,
+            EditorMode.IDLE: None,
+            EditorMode.MEASURE: measureOverlay,
+            EditorMode.SELECT_ROI: roiOverlay,
+            EditorMode.SELECT_FG: contourOverlay,
         }
         # eingebettete button
         self.btnContPlus = QToolButton(self)
@@ -78,21 +78,21 @@ class PhotoWidget(QWidget):
 
     def machmalSession(self, pixmap):
         roi = matching.open_session(pixmap)
-        overlay = self.overlays[Mode.SELECT_ROI]
+        overlay = self.overlays[EditorMode.SELECT_ROI]
         overlay.imageRoi = QRect(roi.x, roi.y, roi.w, roi.h)
-        overlay = self.overlays[Mode.MEASURE]
+        overlay = self.overlays[EditorMode.MEASURE]
         overlay.reset()
-        overlay = self.overlays[Mode.SELECT_FG]
+        overlay = self.overlays[EditorMode.SELECT_FG]
         overlay.contour = QPolygonF()
 
     def enterMode(self, mode):
         if mode == self.mode:
             return
 
-        if mode == Mode.SELECT_FG:
-            fgoverlay = self.overlays[Mode.SELECT_FG]
+        if mode == EditorMode.SELECT_FG:
+            fgoverlay = self.overlays[EditorMode.SELECT_FG]
             if fgoverlay.contour.isEmpty():
-                roioverlay = self.overlays[Mode.SELECT_ROI]
+                roioverlay = self.overlays[EditorMode.SELECT_ROI]
                 fgoverlay.contour = matching.find_foreground(roioverlay.imageRoi)
 
         newoverlay = self.overlays[mode]
@@ -120,7 +120,7 @@ class PhotoWidget(QWidget):
             destrect = self.transform().mapRect(srcrect)
             painter.drawPixmap(destrect, self.photo, srcrect)
             painter.fillRect(crc, QBrush(DIM_COLOR))
-        if self.mode == Mode.IDLE:
+        if self.mode == EditorMode.IDLE:
             # alle duerfen zeichen
             for key in self.overlays.keys():
                 overlay = self.overlays[key]
@@ -167,13 +167,13 @@ class PhotoWidget(QWidget):
             return QTransform()
 
     def onMeasureDone(self):
-        overlay = self.overlays[Mode.MEASURE]
+        overlay = self.overlays[EditorMode.MEASURE]
         dlg = uic.loadUi('./ui/mesauredistdialog.ui')
         if dlg.exec_() == QDialog.Accepted:
             overlay.lengthText = dlg.lineEdit.text() + 'mm'
         else:
             overlay.reset()
-        self.enterMode(Mode.IDLE)
+        self.enterMode(EditorMode.IDLE)
 
     def onFreeHandDone(self, mousePos):
         offs = 10
@@ -184,7 +184,7 @@ class PhotoWidget(QWidget):
         self.btnContMinus.show()
 
     def addCountour(self):
-        overlay = self.overlays[Mode.SELECT_FG]
+        overlay = self.overlays[EditorMode.SELECT_FG]
         self.btnContPlus.hide()
         self.btnContMinus.hide()
         overlay.contour = matching.add_foreground(overlay.freeHandPath)
@@ -194,11 +194,42 @@ class PhotoWidget(QWidget):
         kjkjh = matching.estimate_candidates()
 
     def removeCountour(self):
-        overlay = self.overlays[Mode.SELECT_FG]
+        overlay = self.overlays[EditorMode.SELECT_FG]
         self.btnContPlus.hide()
         self.btnContMinus.hide()
         overlay.contour = matching.remove_foreground(overlay.freeHandPath)
         overlay.freeHandPath.clear()
         self.update()
         self.contourChanged.emit()
-        kjkjh = matching.estimate_candidates()
+
+
+class PictureView(QWidget):
+    '''Passives Fenster in Results Fenster
+    '''
+    def __init__(self, *args, **kwargs):
+        super(PictureView, self).__init__(*args, **kwargs)
+        self.bkimage = QPixmap('./ui/png/tile.png')
+        self.photo = None
+
+    def paintEvent(self, event):
+        painter = QPainter()
+        painter.begin(self)
+        crc = self.rect()
+        painter.fillRect(crc, QBrush(self.bkimage))
+        painter.setRenderHint(QPainter.Antialiasing)
+        painter.setRenderHint(QPainter.HighQualityAntialiasing)
+        if self.photo is not None:
+            srcrect = self.photo.rect()
+            destrect = self.transform().mapRect(srcrect)
+            painter.drawPixmap(destrect, self.photo, srcrect)
+        painter.end()
+
+    def transform(self) -> QTransform:
+        if self.photo is not None:
+            srcrc = self.photo.rect()
+            destrc = self.rect()
+            trfshift = _translate(srcrc, destrc, QPoint(0, 0))
+            trfscale = _scale(srcrc, destrc, 1.0)
+            return trfscale * trfshift
+        else:
+            return QTransform()
