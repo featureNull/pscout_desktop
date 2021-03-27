@@ -16,10 +16,15 @@ class MainWindow(QMainWindow):
     def __init__(self, *args, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)
         uic.loadUi('./ui/mainwindow.ui', self)
+        session_mngr = QtGui.qApp.sessionManager
+
         # piceditor verdrahten
         self.picEditor.findContourRequested.connect(self.findContour)
         self.picEditor.addContourRequested.connect(self.addContour)
         self.picEditor.removeContourRequested.connect(self.removeContour)
+        self.picEditor.modeChanged.connect(self.updateToolbaricons)
+        session_mngr.contourChanged.connect(self.picEditor.updateContour)
+
         # load image button
         self.btnLoad.clicked.connect(self.openFileNameDialog)
         self.btnLoad.setIcon(qta.icon('fa5s.folder-open', color='gray'))
@@ -32,23 +37,23 @@ class MainWindow(QMainWindow):
         copysc.activated.connect(self.copyFromClipboard)
         self.onClipboardChanged()
         self.setAcceptDrops(True)
-
+        # close image
+        self.btnCloseImage.setIcon(qta.icon('fa5s.trash-alt', color='gray'))
+        self.btnCloseImage.setEnabled(False)
+        self.btnCloseImage.clicked.connect(self.closePhoto)
+        session_mngr.stateChanged.connect(self.btnCloseImage.setEnabled)
         # 3 right buttons
         self.btnMeasure.clicked.connect(self.enterMeasure)
         messc = QShortcut(QKeySequence('Ctrl+M'), self)
         messc.activated.connect(self.enterMeasure)
         self.btnRegion.clicked.connect(self.enterSelectRoi)
         self.btnCutForeground.clicked.connect(self.enterSelectFg)
-
         # search button
         self.btnSearch.setIcon(qta.icon('fa5s.search', color='gray'))
         self.btnSearch.clicked.connect(self.searchModel)
-
         self.updateToolbaricons(EditMode.IDLE)
-        self.picEditor.modeChanged.connect(self.updateToolbaricons)
-
+        # settings
         self.btnSettings.setIcon(qta.icon('fa5s.cog', color='gray'))
-        # self.contourChanged.connect(self.filterwidget.loadStatistics)
 
     def openFileNameDialog(self):
         filter = 'Image files (*.jpg *.png)'
@@ -76,6 +81,11 @@ class MainWindow(QMainWindow):
     def loadPhoto(self, pixmap):
         rect = QtGui.qApp.sessionManager.open(pixmap)
         self.picEditor.setPhoto(pixmap, rect)
+
+    def closePhoto(self):
+        self.picEditor.setMode(EditMode.IDLE)
+        QtGui.qApp.sessionManager.close()
+        self.picEditor.setPhoto(None)
 
     def dragEnterEvent(self, e):
         if e.mimeData().hasUrls():
@@ -108,18 +118,15 @@ class MainWindow(QMainWindow):
     def findContour(self, rc: QRect):
         self.picEditor.setMode(EditMode.FG)
         sm = QtGui.qApp.sessionManager
-        cont = sm.findForeground(rc)
-        self.picEditor.updateContour(cont)
+        sm.findForeground(rc)
 
     def addContour(self, polyline):
         sm = QtGui.qApp.sessionManager
-        cont = sm.addForeground(polyline)
-        self.picEditor.updateContour(cont)
+        sm.addForeground(polyline)
 
     def removeContour(self, polyline):
         sm = QtGui.qApp.sessionManager
-        cont = sm.removeForeground(polyline)
-        self.picEditor.updateContour(cont)
+        sm.removeForeground(polyline)
 
     def updateToolbaricons(self, mode):
         ctx = {

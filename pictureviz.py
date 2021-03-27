@@ -86,6 +86,7 @@ class PictureEditor(QWidget):
     @pyqtSlot(QPolygonF)
     def updateContour(self, cont):
         self.contOverlay.contour = cont
+        self.update()
 
     def paintEvent(self, event):
         painter = QPainter()
@@ -153,13 +154,13 @@ class PictureEditor(QWidget):
             return QTransform()
 
     def _onMeasureDone(self):
-        overlay = self.overlays[EditMode.MEASURE]
+        overlay = self.mesOverlay
         dlg = uic.loadUi('./ui/mesauredistdialog.ui')
         if dlg.exec_() == QDialog.Accepted:
             overlay.lengthText = dlg.lineEdit.text() + 'mm'
         else:
             overlay.reset()
-        self.enterMode(EditMode.IDLE)
+        self.setMode(EditMode.IDLE)
 
     def _onFreeHandDone(self, mousePos):
         offs = 10

@@ -194,7 +194,6 @@ class RoiOverlay(AbstractOverlay):
             # mouse move without button pressed
             hitnew = self._hitTest(self.itemRoi, event.pos())
             if self._hit != hitnew:
-                print(hitnew)
                 if hitnew == Hit.Top or hitnew == Hit.Bottom:
                     cursor = Qt.SizeVerCursor
                 elif hitnew == Hit.Left or hitnew == Hit.Right:

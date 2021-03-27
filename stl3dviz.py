@@ -24,7 +24,7 @@ class StlDetailsView(QVTKRenderWindowInteractor):
         # Create an actor
         actor = vtk.vtkActor()
         actor.SetMapper(self.mapper)
-        actor.GetProperty().SetColor(0.7, 0.7, 0.7)
+        actor.GetProperty().SetColor(1.0, 1.0, 1.0)
 
         self.ren.AddActor(actor)
         self.ren.SetBackground(0.098, 0.137, 0.176)
