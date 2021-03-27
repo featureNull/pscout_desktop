@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QMainWindow, QApplication, QShortcut, QFileDialog
 from PyQt5.QtGui import QPixmap, QKeySequence
 from PyQt5.QtCore import QRect
 from PyQt5 import QtGui
+from PyQt5.QtWidgets import QMessageBox
 
 from PyQt5.QtCore import Qt
 from PyQt5 import uic
@@ -16,16 +17,25 @@ class MainWindow(QMainWindow):
     def __init__(self, *args, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)
         uic.loadUi('./ui/mainwindow.ui', self)
+        filter_mngr = QtGui.qApp.filterManager
         session_mngr = QtGui.qApp.sessionManager
-
+        # filter verdrahten
+        self.filterWidget.setup(filter_mngr.categories, filter_mngr.keywords)
+        self.filterWidget.textFilterAdded.connect(filter_mngr.addTextFilter)
+        self.filterWidget.textFilterRemoved.connect(filter_mngr.removeTextFilter)
+        for cat in filter_mngr.categories:
+            count = filter_mngr.getModelCount(cat.id)
+            self.filterWidget.updateCategoryStatistics(cat.id, count)
+        filter_mngr.categoryCountChanged.connect(
+            self.filterWidget.updateCategoryStatistics)
+        self.filterWidget.categoryEnabledChanged.connect(filter_mngr.setCategoryEnabled)
         # piceditor verdrahten
         self.picEditor.findContourRequested.connect(self.findContour)
         self.picEditor.addContourRequested.connect(self.addContour)
         self.picEditor.removeContourRequested.connect(self.removeContour)
         self.picEditor.modeChanged.connect(self.updateToolbaricons)
         session_mngr.contourChanged.connect(self.picEditor.updateContour)
-
-        # load image button
+        # setup load image button
         self.btnLoad.clicked.connect(self.openFileNameDialog)
         self.btnLoad.setIcon(qta.icon('fa5s.folder-open', color='gray'))
         self.actionLoad.triggered.connect(self.openFileNameDialog)
@@ -70,13 +80,16 @@ class MainWindow(QMainWindow):
         self.loadPhoto(pixmap)
 
     def searchModel(self):
-        modelids = [1, 2, 3, 4, 5, 6, 7]
-        lt = QtGui.qApp.stlloadthread
-        self.resultwnd = ResultWindow(modelids)
-        lt.receivedData.connect(self.resultwnd.loadStlContent)
-        lt.startLoading(modelids)
-        self.resultwnd.setGeometry(self.geometry())
-        self.resultwnd.show()
+        modelids = QtGui.qApp.filterManager.gebmirallemodelidsdiesseinkoennten()
+        if (len(modelids) > 30):
+            QMessageBox.critical(self, 'fehler', 'zu viele Modelle ohne Bild')
+        else:
+            lt = QtGui.qApp.stlloadthread
+            self.resultwnd = ResultWindow(modelids)
+            lt.receivedData.connect(self.resultwnd.loadStlContent)
+            lt.startLoading(modelids)
+            self.resultwnd.setGeometry(self.geometry())
+            self.resultwnd.show()
 
     def loadPhoto(self, pixmap):
         rect = QtGui.qApp.sessionManager.open(pixmap)

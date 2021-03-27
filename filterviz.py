@@ -6,18 +6,85 @@ from PyQt5.QtWidgets import (
     QSpacerItem, QSizePolicy, QLineEdit, QCompleter
 )
 import qtawesome as qta
-import metadata
 
 
-def _change_font(widget, size=10, bold=False):
-    font = widget.font()
-    font.setPointSize(size)
-    font.setBold(bold)
-    widget.setFont(font)
+class FilterWidget(QWidget):
+    textFilterAdded = pyqtSignal(str)
+    textFilterRemoved = pyqtSignal(str)
+    categoryEnabledChanged = pyqtSignal(int, bool)
+
+    def __init__(self, *args, **kwargs):
+        super(QWidget, self).__init__(*args, **kwargs)
+        layout = QVBoxLayout(self)
+
+        self.categorywidgets = {}
+        self.categories_frame = QFrame()
+        self.categories_frame.setLayout(QVBoxLayout())
+        self.categories_frame.layout().setSpacing(2)
+        layout.addWidget(self.categories_frame)
+        layout.setContentsMargins(6, 6, 3, 6)
+
+        tf = QWidget()
+        tf.setStyleSheet("background-color: transparent")
+        tf.setLayout(QVBoxLayout())
+        tf.layout().setContentsMargins(0, 0, 0, 0)
+        layout.addWidget(tf)
+        self.textfilters_frame = tf
+        # line edit
+        le = QLineEdit()
+        le.setPlaceholderText('enter text filter')
+        le.setMinimumHeight(30)
+        le.returnPressed.connect(self._addTextFilterBox)
+        _change_font(le)
+        layout.addWidget(le)
+        self.searchedit = le
+        # patch layout
+        spacer = QSpacerItem(1, 1, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        layout.addItem(spacer)
+
+    def setup(self, categories, keywords):
+        layout = self.categories_frame.layout()
+        for cat in categories:
+            w = _CategoryWidget(cat.shortname, cat.longname)
+            w.selectedChanged.connect(self._onCatSelectedChanged)
+            w.modelCount = 0  # QtGui.qApp.filterManager.get_category_model_count(cat.id, [])
+            self.categorywidgets[cat.id] = w
+            layout.addWidget(w)
+        # setup keyword completer
+        completer = QCompleter(keywords)
+        _change_font(completer.popup())
+        completer.setCaseSensitivity(Qt.CaseInsensitive)
+        completer.setFilterMode(Qt.MatchContains)
+        self.searchedit.setCompleter(completer)
+
+    def updateCategoryStatistics(self, catid, count):
+        self.categorywidgets[catid].modelCount = count
+
+    def _addTextFilterBox(self):
+        text = self.searchedit.text()
+        if len(text):
+            self.textFilterAdded.emit(text)
+            tf = _TextFilterBox(text)
+            tf.removeRequested.connect(self._removeTextFilterBox)
+            layout = self.textfilters_frame.layout()
+            layout.addWidget(tf)
+            # workaround strange Qlineedit behaivor
+            QTimer.singleShot(100, self.searchedit.clear)
+
+    def _removeTextFilterBox(self, welches):
+        self.textFilterRemoved.emit(welches.text)
+        layout = self.textfilters_frame.layout()
+        layout.removeWidget(welches)
+        welches.deleteLater()
+
+    def _onCatSelectedChanged(self, catw, enabled):
+        for id in self.categorywidgets.keys():
+            if catw == self.categorywidgets[id]:
+                self.categoryEnabledChanged.emit(id, enabled)
 
 
 class _CategoryWidget(QWidget):
-    selectedChanged = pyqtSignal(bool)
+    selectedChanged = pyqtSignal(QWidget, bool)
 
     def __init__(self, shortname, longname):
         super(QWidget, self).__init__()
@@ -26,6 +93,8 @@ class _CategoryWidget(QWidget):
         layout.setContentsMargins(0, 0, 0, 0)
 
         self._btn = QCheckBox(f'{shortname}   {longname}')
+        self._btn.setChecked(True)
+        self._btn.clicked.connect(self.onClicked)
         _change_font(self._btn)
         layout.addWidget(self._btn)
 
@@ -36,7 +105,7 @@ class _CategoryWidget(QWidget):
         layout.addWidget(self._lbl)
 
     def onClicked(self):
-        self.selectedChanged.emit(self._btn.checked())
+        self.selectedChanged.emit(self, self._btn.isChecked())
 
     @property
     def selected(self):
@@ -79,75 +148,8 @@ class _TextFilterBox(QFrame):
         self.removeRequested.emit(self)
 
 
-class FilterWidget(QWidget):
-    changed = pyqtSignal()
-
-    def __init__(self, *args, **kwargs):
-        super(QWidget, self).__init__(*args, **kwargs)
-        layout = QVBoxLayout(self)
-
-        self.categorywidgets = {}
-        self.categories_frame = QFrame()
-        self.categories_frame.setLayout(QVBoxLayout())
-        self.categories_frame.layout().setSpacing(2)
-        layout.addWidget(self.categories_frame)
-        layout.setContentsMargins(6, 6, 3, 6)
-
-        tf = QWidget()
-        tf.setStyleSheet("background-color: transparent")
-        tf.setLayout(QVBoxLayout())
-        tf.layout().setContentsMargins(0, 0, 0, 0)
-        layout.addWidget(tf)
-        self.textfilters_frame = tf
-        self.filter_words = []
-
-        le = QLineEdit()
-        le.setPlaceholderText('enter text filter')
-        le.setMinimumHeight(30)
-        le.returnPressed.connect(self.addTextFilter)
-        _change_font(le)
-        layout.addWidget(le)
-
-        completer = QCompleter(metadata._wordlist)
-        _change_font(completer.popup())
-        completer.setCaseSensitivity(Qt.CaseInsensitive)
-        completer.setFilterMode(Qt.MatchContains)
-        le.setCompleter(completer)
-        self.searchedit = le
-
-        self.setupCategories()
-        spacer = QSpacerItem(1, 1, QSizePolicy.Minimum, QSizePolicy.Expanding)
-        layout.addItem(spacer)
-
-    def setupCategories(self):
-        layout = self.categories_frame.layout()
-        for cat in metadata.categories.entities:
-            w = _CategoryWidget(cat.shortname, cat.longname)
-            w.modelCount = metadata.get_category_model_count(cat.id, [])
-            self.categorywidgets[cat.id] = w
-            layout.addWidget(w)
-
-    def addTextFilter(self):
-        text = self.searchedit.text()
-        if len(text):
-            self.filter_words.append(text)
-            tf = _TextFilterBox(text)
-            tf.removeRequested.connect(self.removeTextFilter)
-            layout = self.textfilters_frame.layout()
-            layout.addWidget(tf)
-            self.loadStatistics()
-            # workaround strange Qlineedit behaivor
-            QTimer.singleShot(100, self.searchedit.clear)
-
-    def removeTextFilter(self, welches):
-        self.filter_words.remove(welches.text)
-        layout = self.textfilters_frame.layout()
-        layout.removeWidget(welches)
-        welches.deleteLater()
-        self.loadStatistics()
-
-    def loadStatistics(self):
-        cats = self.categorywidgets
-        for id in cats.keys():
-            count = metadata.get_category_model_count(id, self.filter_words)
-            cats[id].modelCount = count
+def _change_font(widget, size=10, bold=False):
+    font = widget.font()
+    font.setPointSize(size)
+    font.setBold(bold)
+    widget.setFont(font)
