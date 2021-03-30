@@ -3,9 +3,10 @@
 from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QWidget
 from PyQt5.QtCore import QSize, pyqtSlot
 from PyQt5 import uic
+from PyQt5 import QtGui
+
 from flowlayout import FlowLayout
 from stl3dviz import StlThumbnail
-
 
 class ResultWindow(QMainWindow):
     def __init__(self, modelids):
@@ -19,7 +20,7 @@ class ResultWindow(QMainWindow):
             tn = StlThumbnail()
             tn.setMinimumSize(QSize(180, 180))
             tn.setMaximumSize(QSize(180, 180))
-            tn.setToolTip('there is no tooltip for specific window')
+            tn.setToolTip(_build_tooltip_text(id))
             tn.clicked.connect(self._ontumbnailClicked)
             self.thumbnailLayout.addWidget(tn)
             self.thumbnails[id] = tn
@@ -30,10 +31,14 @@ class ResultWindow(QMainWindow):
 
     @pyqtSlot(QWidget)
     def _ontumbnailClicked(self, w: StlThumbnail):
-        for tn in self.thumbnails.values():
+        for id in self.thumbnails.keys():
+            tn = self.thumbnails[id]
             tn.selected = w == tn
+            if w == tn:
+                curid = id
         if w.stldata is not None:
             self.stlView.loadstl(w.stldata)
+            self.infoText.setText(_build_info_text(curid))
 
     def _setupScrollArea(self):
         container = QWidget()
@@ -55,3 +60,28 @@ class ResultWindow(QMainWindow):
                 if type(w) is StlThumbnail:
                     w.vtkShutdownPatch()
         self.stlView.vtkShutdownPatch()
+
+
+def _build_tooltip_text(modelid) -> str:
+    md = QtGui.qApp.findModelMetadata(modelid)
+    cat = QtGui.qApp.findCategory(md.categoryid)
+    html = f'''
+    <html><head/><body><p>
+        <b>{md.artikelnum} ({cat.shortname})</b>
+        <br/>{md.shortdesc}
+        </p></body></html>
+    '''
+    return html
+
+
+def _build_info_text(modelid) -> str:
+    md = QtGui.qApp.findModelMetadata(modelid)
+    cat = QtGui.qApp.findCategory(md.categoryid)
+    html = f'''
+    <html><head/><body><p>
+        <b>{md.artikelnum} ({cat.shortname})</b>
+        <br/>{md.shortdesc}
+        <p>{md.longdesc}</p>
+        </p></body></html>
+    '''
+    return html

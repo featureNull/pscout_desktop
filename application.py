@@ -34,6 +34,16 @@ class Application(QApplication):
     def closeConnection(self):
         self.channel.close()
 
+    def findCategory(self, id: int):
+        for cat in self.categories:
+            if cat.id == id:
+                return cat
+
+    def findModelMetadata(self, id: int):
+        for md in self.modelsMetaData:
+            if md.id == id:
+                return md
+
     def _load_categories(self):
         stub = metadata_pb2_grpc.DatabaseStub(self.channel)
         language = metadata_pb2.Language.EN
