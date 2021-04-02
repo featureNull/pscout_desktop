@@ -18,14 +18,16 @@ class SessionManager(QObject):
     def __init__(self, channel):
         super(SessionManager, self).__init__()
         self.roi = None
+        self.cont = None
         self._channel = channel
         self._uuid = None
+        self.pixmap = None
 
     def open(self, pixmap):
-        '''opens new image session
-        '''
+        '''opens new image session'''
         if self._uuid is not None:
             self.close()
+        self.pixmap = pixmap
         stub = Stup(self._channel)
         request = pb2.OpenSessionRequest(image_data=_decode(pixmap))
         reply = stub.OpenSession(request)
@@ -36,13 +38,14 @@ class SessionManager(QObject):
     def close(self):
         stub = Stup(self._channel)
         stub.CloseSession(pb2.SessionRequest(uuid=self._uuid))
-        self.roi = self._uuid = None
+        self.pixmap = self.roi = self._uuid = None
         self.stateChanged.emit(False)
 
     def findForeground(self, rect):
         def process_response(future):
             res = future.result()
             cont = _contour_to_qpolygonf(res.contour)
+            self.cont = cont
             self.contourChanged.emit(cont)
         stub = Stup(self._channel)
         request = pb2.FindForeGroundRequest(uuid=self._uuid, roi=_rect_to_roi(rect))
@@ -61,6 +64,7 @@ class SessionManager(QObject):
         def process_response(future):
             res = future.result()
             cont = _contour_to_qpolygonf(res.contour)
+            self.cont = cont
             self.contourChanged.emit(cont)
         stub = Stup(self._channel)
         corline = _qpolyline_to_point2d_array(polyline)

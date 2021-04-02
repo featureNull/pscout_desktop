@@ -4,13 +4,12 @@ from PyQt5.QtWidgets import QMainWindow, QApplication, QShortcut, QFileDialog
 from PyQt5.QtGui import QPixmap, QKeySequence
 from PyQt5.QtCore import QRect
 from PyQt5 import QtGui
-from PyQt5.QtWidgets import QMessageBox
 
 from PyQt5.QtCore import Qt
 from PyQt5 import uic
 import qtawesome as qta
 from pictureviz import EditMode
-from resultwindow import ResultWindow
+import opencv_hacks
 
 
 class MainWindow(QMainWindow):
@@ -20,9 +19,9 @@ class MainWindow(QMainWindow):
         filter_mngr = QtGui.qApp.filterManager
         session_mngr = QtGui.qApp.sessionManager
         # filter verdrahten
-        self.filterWidget.setup(filter_mngr.categories, filter_mngr.keywords)
-        self.filterWidget.textFilterAdded.connect(filter_mngr.addTextFilter)
-        self.filterWidget.textFilterRemoved.connect(filter_mngr.removeTextFilter)
+        self.filterWidget.setup(QtGui.qApp.filterManager.categories, QtGui.qApp.filterManager.keywords)
+        self.filterWidget.textFilterAdded.connect(QtGui.qApp.filterManager.addTextFilter)
+        self.filterWidget.textFilterRemoved.connect(QtGui.qApp.filterManager.removeTextFilter)
         for cat in filter_mngr.categories:
             count = filter_mngr.getModelCount(cat.id)
             self.filterWidget.updateCategoryStatistics(cat.id, count)
@@ -60,7 +59,7 @@ class MainWindow(QMainWindow):
         self.btnCutForeground.clicked.connect(self.enterSelectFg)
         # search button
         self.btnSearch.setIcon(qta.icon('fa5s.search', color='gray'))
-        self.btnSearch.clicked.connect(self.searchModel)
+        self.btnSearch.clicked.connect(QtGui.qApp.searchModel)
         self.updateToolbaricons(EditMode.IDLE)
         # settings
         self.btnSettings.setIcon(qta.icon('fa5s.cog', color='gray'))
@@ -79,21 +78,10 @@ class MainWindow(QMainWindow):
         pixmap = QApplication.clipboard().pixmap()
         self.loadPhoto(pixmap)
 
-    def searchModel(self):
-        modelids = QtGui.qApp.filterManager.gebmirallemodelidsdiesseinkoennten()
-        if (len(modelids) > 30):
-            QMessageBox.critical(self, 'fehler', 'zu viele Modelle ohne Bild')
-        else:
-            lt = QtGui.qApp.stlloadthread
-            self.resultwnd = ResultWindow(modelids)
-            lt.receivedData.connect(self.resultwnd.loadStlContent)
-            lt.startLoading(modelids)
-            self.resultwnd.setGeometry(self.geometry())
-            self.resultwnd.show()
-
     def loadPhoto(self, pixmap):
-        rect = QtGui.qApp.sessionManager.open(pixmap)
-        self.picEditor.setPhoto(pixmap, rect)
+        pixmap512x512 = opencv_hacks.qpixmap_to_border_512x512(pixmap)
+        rect = QtGui.qApp.sessionManager.open(pixmap512x512)
+        self.picEditor.setPhoto(pixmap512x512, rect)
 
     def closePhoto(self):
         self.picEditor.setMode(EditMode.IDLE)

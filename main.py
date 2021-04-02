@@ -28,8 +28,8 @@ if __name__ == "__main__":
     app.connectServer()
     lbl.hide()
 
-    wnd = MainWindow()
-    wnd.show()
+    app.mainWindow = MainWindow()
+    app.mainWindow.show()
     app.exec_()
 
     app.closeConnection()
