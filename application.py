@@ -15,8 +15,11 @@ from resultwindow import ResultWindow
 
 
 class Application(QApplication):
+    '''singletone application object.
+    beherbergt FilterManager und SessionManager
+    '''
     def __init__(self, *args, **kwargs):
-        super(Application, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.stlloadthread = None
         self.sessionManager = None
         self.filterManager = None
@@ -52,7 +55,7 @@ class Application(QApplication):
     def searchModel(self):
         '''quickhack, dass man was sieht
         '''
-        modelids = QtGui.qApp.filterManager.gebmirallemodelidsdiesseinkoennten()
+        modelids = QtGui.qApp.filterManager.filteredModelids
 
         if self.sessionManager.pixmap is not None:
             try:
@@ -60,7 +63,8 @@ class Application(QApplication):
                 pixmap = self.sessionManager.pixmap
                 cont = self.sessionManager.cont
                 image_data = opencv_hacks.build_oldstyle_png_with_alpha(pixmap, cont)
-                entis = self._old_style_matching(image_data)
+                modelids2 = modelids if QtGui.qApp.filterManager.anyfilterActive else []
+                entis = self._old_style_matching(image_data, modelids2)
                 modelids = [enti.modelid for enti in entis]
             finally:
                 self.hidesplash()
@@ -100,7 +104,7 @@ class Application(QApplication):
         response = stub.GetModelsMetadata(request)
         self.modelsMetaData = response.entities
 
-    def _old_style_matching(self, image_data):
+    def _old_style_matching(self, image_data, modelids):
         done = False
         reply = None
 
@@ -110,7 +114,8 @@ class Application(QApplication):
             done = True
 
         stub = matching_pb2_grpc.MatcherStub(self.channel)
-        request = matching_pb2.OldStyleMatchingRequest(image_data=image_data)
+        R = matching_pb2.OldStyleMatchingRequest
+        request = R(image_data=image_data, filteredmodelids=modelids)
         future = stub.OldStyleMatching.future(request)
         future.add_done_callback(process_response)
         while not done:
@@ -122,7 +127,7 @@ class _StlLoadThread(QThread):
     receivedData = pyqtSignal(int, bytes)
 
     def __init__(self, channel):
-        super(_StlLoadThread, self).__init__()
+        super().__init__()
         self.modelids = None
         self.channel = channel
 

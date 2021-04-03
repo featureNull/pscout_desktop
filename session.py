@@ -16,7 +16,7 @@ class SessionManager(QObject):
     stateChanged = pyqtSignal(bool)
 
     def __init__(self, channel):
-        super(SessionManager, self).__init__()
+        super().__init__()
         self.roi = None
         self.cont = None
         self._channel = channel

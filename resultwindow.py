@@ -8,9 +8,10 @@ from PyQt5 import QtGui
 from flowlayout import FlowLayout
 from stl3dviz import StlThumbnail
 
+
 class ResultWindow(QMainWindow):
     def __init__(self, modelids):
-        super(ResultWindow, self).__init__()
+        super().__init__()
         uic.loadUi('./ui/resultwindow.ui', self)
         self._setupScrollArea()
         self.modelids = modelids

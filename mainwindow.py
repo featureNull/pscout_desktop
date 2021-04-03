@@ -1,5 +1,4 @@
-'''main window
-'''
+'''main window'''
 from PyQt5.QtWidgets import QMainWindow, QApplication, QShortcut, QFileDialog
 from PyQt5.QtGui import QPixmap, QKeySequence
 from PyQt5.QtCore import QRect
@@ -14,20 +13,9 @@ import opencv_hacks
 
 class MainWindow(QMainWindow):
     def __init__(self, *args, **kwargs):
-        super(MainWindow, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         uic.loadUi('./ui/mainwindow.ui', self)
-        filter_mngr = QtGui.qApp.filterManager
         session_mngr = QtGui.qApp.sessionManager
-        # filter verdrahten
-        self.filterWidget.setup(QtGui.qApp.filterManager.categories, QtGui.qApp.filterManager.keywords)
-        self.filterWidget.textFilterAdded.connect(QtGui.qApp.filterManager.addTextFilter)
-        self.filterWidget.textFilterRemoved.connect(QtGui.qApp.filterManager.removeTextFilter)
-        for cat in filter_mngr.categories:
-            count = filter_mngr.getModelCount(cat.id)
-            self.filterWidget.updateCategoryStatistics(cat.id, count)
-        filter_mngr.categoryCountChanged.connect(
-            self.filterWidget.updateCategoryStatistics)
-        self.filterWidget.categoryEnabledChanged.connect(filter_mngr.setCategoryEnabled)
         # piceditor verdrahten
         self.picEditor.findContourRequested.connect(self.findContour)
         self.picEditor.addContourRequested.connect(self.addContour)

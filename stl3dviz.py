@@ -12,7 +12,7 @@ class StlDetailsView(QVTKRenderWindowInteractor):
     """grosses fenster mit maus interaktion
     """
     def __init__(self, *args, **kwargs):
-        super(StlDetailsView, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.SetInteractorStyle(vtk.vtkInteractorStyleTrackballCamera())
         self.ren = vtk.vtkRenderer()
         self.GetRenderWindow().AddRenderer(self.ren)
@@ -56,7 +56,7 @@ class StlThumbnail(QtWidgets.QStackedWidget):
     clicked = pyqtSignal(QtWidgets.QWidget)
 
     def __init__(self, *args, **kwargs):
-        super(StlThumbnail, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._selected = False
         self.vtkRenderWindow = None
         self.stldata = None

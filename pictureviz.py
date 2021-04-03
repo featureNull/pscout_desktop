@@ -23,7 +23,7 @@ class PictureEditor(QWidget):
     removeContourRequested = pyqtSignal(QPolygonF)
 
     def __init__(self, *args, **kwargs):
-        super(QWidget, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.bkimage = QPixmap('./ui/png/tile.png')
         self.photo = None
         self.currentZoom = 1.0
@@ -201,7 +201,7 @@ class PictureView(QWidget):
     '''Passives Fenster in Results Fenster
     '''
     def __init__(self, *args, **kwargs):
-        super(PictureView, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.bkimage = QPixmap('./ui/png/tile.png')
         self.photo = None
 

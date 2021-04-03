@@ -190,4 +190,5 @@ message SearchCandidatesReply {
 message OldStyleMatchingRequest {
     /// muss 512x512 mit alpha sein
     bytes image_data = 1;
+	repeated int64 filteredmodelids = 2;
 }

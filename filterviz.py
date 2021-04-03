@@ -5,129 +5,144 @@ from PyQt5.QtWidgets import (
     QWidget, QVBoxLayout, QFrame, QToolButton, QHBoxLayout, QCheckBox, QLabel, 
     QSpacerItem, QSizePolicy, QLineEdit, QCompleter
 )
+from PyQt5 import QtGui
 import qtawesome as qta
 
 
 class FilterWidget(QWidget):
-    textFilterAdded = pyqtSignal(str)
-    textFilterRemoved = pyqtSignal(str)
-    categoryEnabledChanged = pyqtSignal(int, bool)
-
+    '''widget auf linken seite mit checkerbocen und text filter'''
     def __init__(self, *args, **kwargs):
-        super(QWidget, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         layout = QVBoxLayout(self)
 
-        self.categorywidgets = {}
-        self.categories_frame = QFrame()
-        self.categories_frame.setLayout(QVBoxLayout())
-        self.categories_frame.layout().setSpacing(2)
-        layout.addWidget(self.categories_frame)
-        layout.setContentsMargins(6, 6, 3, 6)
+        self.categoryGroup = _CategoryGroup()
+        layout.addWidget(self.categoryGroup)
 
-        tf = QWidget()
-        tf.setStyleSheet("background-color: transparent")
-        tf.setLayout(QVBoxLayout())
-        tf.layout().setContentsMargins(0, 0, 0, 0)
-        layout.addWidget(tf)
-        self.textfilters_frame = tf
-        # line edit
-        le = QLineEdit()
-        le.setPlaceholderText('enter text filter')
-        le.setMinimumHeight(30)
-        le.returnPressed.connect(self._addTextFilterBox)
-        _change_font(le)
-        layout.addWidget(le)
-        self.searchedit = le
+        self.textfiltergroup = _TextFilterGroup()
+        layout.addWidget(self.textfiltergroup)
+
+        self.searchedit = _SearchLineEdit()
+        self.searchedit.keywordEntered.connect(self.textfiltergroup.addBox)
+        layout.addWidget(self.searchedit)
+
         # patch layout
         spacer = QSpacerItem(1, 1, QSizePolicy.Minimum, QSizePolicy.Expanding)
         layout.addItem(spacer)
 
-    def setup(self, categories, keywords):
-        layout = self.categories_frame.layout()
-        for cat in categories:
-            w = _CategoryWidget(cat.shortname, cat.longname)
-            w.selectedChanged.connect(self._onCatSelectedChanged)
-            w.modelCount = 0  # QtGui.qApp.filterManager.get_category_model_count(cat.id, [])
-            self.categorywidgets[cat.id] = w
+
+class _CategoryGroup(QFrame):
+    catEnabledChanged = pyqtSignal()
+    '''box mit den checkerboxen'''
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        manager = QtGui.qApp.filterManager
+        manager.changed.connect(self.updateModelCount)
+        layout = QVBoxLayout()
+        layout.setSpacing(2)
+        self.catchilds = {}
+        for id, cat in manager.categories.items():
+            w = _CategoryCheckbox(cat)
+            w.enabledChanged.connect(self._onCheckerEnableChanged)
+            self.catchilds[id] = w
             layout.addWidget(w)
-        # setup keyword completer
-        completer = QCompleter(keywords)
-        _change_font(completer.popup())
-        completer.setCaseSensitivity(Qt.CaseInsensitive)
-        completer.setFilterMode(Qt.MatchContains)
-        self.searchedit.setCompleter(completer)
+        self.setLayout(layout)
+        self.layout().setSpacing(2)
+        self.updateModelCount()
 
-    def updateCategoryStatistics(self, catid, count):
-        self.categorywidgets[catid].modelCount = count
+    def _onCheckerEnableChanged(self, enabled):
+        self.catEnabledChanged.emit()
 
-    def _addTextFilterBox(self):
-        text = self.searchedit.text()
-        if len(text):
-            self.textFilterAdded.emit(text)
-            tf = _TextFilterBox(text)
-            tf.removeRequested.connect(self._removeTextFilterBox)
-            layout = self.textfilters_frame.layout()
-            layout.addWidget(tf)
-            # workaround strange Qlineedit behaivor
-            QTimer.singleShot(100, self.searchedit.clear)
-
-    def _removeTextFilterBox(self, welches):
-        self.textFilterRemoved.emit(welches.text)
-        layout = self.textfilters_frame.layout()
-        layout.removeWidget(welches)
-        welches.deleteLater()
-
-    def _onCatSelectedChanged(self, catw, enabled):
-        for id in self.categorywidgets.keys():
-            if catw == self.categorywidgets[id]:
-                self.categoryEnabledChanged.emit(id, enabled)
+    def updateModelCount(self):
+        manager = QtGui.qApp.filterManager
+        for id in self.catchilds.keys():
+            count = manager.getFilteredModelCount(id)
+            self.catchilds[id].updateCount(count)
 
 
-class _CategoryWidget(QWidget):
-    selectedChanged = pyqtSignal(QWidget, bool)
+class _CategoryCheckbox(QWidget):
+    '''einzelne checkerbox mit model count'''
+    enabledChanged = pyqtSignal(bool)
 
-    def __init__(self, shortname, longname):
-        super(QWidget, self).__init__()
+    def __init__(self, cat):
+        super().__init__()
+        self.cat = cat
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         layout = QHBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
+        self.btn = QCheckBox(f'{cat.shortname}   {cat.longname}')
+        self.btn.setChecked(cat.enabled)
+        self.btn.clicked.connect(self._onClicked)
+        _change_font(self.btn)
+        layout.addWidget(self.btn)
+        self.lbl = QLabel('')
+        self.lbl.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        _change_font(self.lbl, bold=False)
+        layout.addWidget(self.lbl)
 
-        self._btn = QCheckBox(f'{shortname}   {longname}')
-        self._btn.setChecked(True)
-        self._btn.clicked.connect(self.onClicked)
-        _change_font(self._btn)
-        layout.addWidget(self._btn)
-
-        self._modelCount = 0
-        self._lbl = QLabel('')
-        self._lbl.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        _change_font(self._lbl, bold=False)
-        layout.addWidget(self._lbl)
-
-    def onClicked(self):
-        self.selectedChanged.emit(self, self._btn.isChecked())
-
-    @property
-    def selected(self):
-        self._btn.checked()
-
-    @property
-    def modelCount(self):
-        return self._modelCount
-
-    @modelCount.setter
-    def modelCount(self, value):
-        self._modelCount = value
-        self._lbl.setText(str(value))
+    def updateCount(self, value):
+        self.lbl.setText(str(value))
         style = 'color: gray' if value == 0 else ''
-        self._lbl.setStyleSheet(style)
+        self.lbl.setStyleSheet(style)
+
+    def _onClicked(self):
+        checked = self.btn.isChecked()
+        self.cat.enabled = checked
+        self.enabledChanged.emit(checked)
+
+
+class _SearchLineEdit(QLineEdit):
+    '''suchfenster eingabe'''
+    keywordEntered = pyqtSignal(str)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.setPlaceholderText('enter text filter')
+        self.setMinimumHeight(30)
+        _change_font(self)
+        manager = QtGui.qApp.filterManager
+        manager.changed.connect(self._clearDelayed)
+        completer = QCompleter(manager.keywords)
+        _change_font(completer.popup())
+        completer.setCaseSensitivity(Qt.CaseInsensitive)
+        completer.setFilterMode(Qt.MatchContains)
+        self.setCompleter(completer)
+        self.returnPressed.connect(self._onReturnPressed)
+
+    def _onReturnPressed(self):
+        if len(self.text()) > 0:
+            self.keywordEntered.emit(self.text())
+
+    def _clearDelayed(self):
+        # workaround strange Qlineedit behaivor with completer
+        QTimer.singleShot(100, self.clear)
+
+
+class _TextFilterGroup(QWidget):
+    '''group mit tesxt filter boxes'''
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.setStyleSheet("background-color: transparent")
+        self.layout = QVBoxLayout()
+        self.layout.setContentsMargins(0, 0, 0, 0)
+        self.setLayout(self.layout)
+
+    def addBox(self, text):
+        tf = _TextFilterBox(text)
+        tf.removeRequested.connect(self._remove)
+        self.layout.addWidget(tf)
+        QtGui.qApp.filterManager.addTextFilter(text)
+
+    def _remove(self, which):
+        self.layout.removeWidget(which)
+        QtGui.qApp.filterManager.removeTextFilter(which.text)
+        which.deleteLater()
 
 
 class _TextFilterBox(QFrame):
     removeRequested = pyqtSignal(QWidget)
 
     def __init__(self, text):
-        super(QFrame, self).__init__()
+        super().__init__()
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         self.setStyleSheet("background-color: #19232D")
         layout = QHBoxLayout(self)
