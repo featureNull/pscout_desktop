@@ -2,8 +2,8 @@
 '''
 from PyQt5.QtCore import pyqtSignal, Qt, QTimer
 from PyQt5.QtWidgets import (
-    QWidget, QVBoxLayout, QFrame, QToolButton, QHBoxLayout, QCheckBox, QLabel, 
-    QSpacerItem, QSizePolicy, QLineEdit, QCompleter
+    QWidget, QVBoxLayout, QFrame, QToolButton, QHBoxLayout, QCheckBox, QLabel,
+    QSpacerItem, QSizePolicy, QLineEdit, QCompleter, QMenu
 )
 from PyQt5 import QtGui
 import qtawesome as qta
@@ -35,6 +35,8 @@ class _CategoryGroup(QFrame):
     '''box mit den checkerboxen'''
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.customContextMenuRequested.connect(self._showContextMenu)
         manager = QtGui.qApp.filterManager
         manager.changed.connect(self.updateModelCount)
         layout = QVBoxLayout()
@@ -49,14 +51,45 @@ class _CategoryGroup(QFrame):
         self.layout().setSpacing(2)
         self.updateModelCount()
 
-    def _onCheckerEnableChanged(self, enabled):
-        self.catEnabledChanged.emit()
-
     def updateModelCount(self):
         manager = QtGui.qApp.filterManager
         for id in self.catchilds.keys():
             count = manager.getFilteredModelCount(id)
             self.catchilds[id].updateCount(count)
+
+    def _onCheckerEnableChanged(self, enabled):
+        self.catEnabledChanged.emit()
+
+    def _showContextMenu(self, lpos):
+        wunderm = self._childUnderMouse()
+        if wunderm is None:
+            return
+        menu = QMenu(self)
+        sa = menu.addAction('Select All')
+        sot = menu.addAction('Select Only This')
+        sabt = menu.addAction('Select All, But This')
+        mres = menu.exec(QtGui.QCursor.pos())
+        if mres == sa:
+            for cbx in self.catchilds.values():
+                cbx.cat.enabled = True
+                cbx.btn.setChecked(True)
+        elif mres == sot:
+            for cbx in self.catchilds.values():
+                enabled = cbx == wunderm
+                cbx.cat.enabled = enabled
+                cbx.btn.setChecked(enabled)
+        elif mres == sabt:
+            for cbx in self.catchilds.values():
+                enabled = cbx != wunderm
+                cbx.cat.enabled = enabled
+                cbx.btn.setChecked(enabled)
+        self.catEnabledChanged.emit()
+
+    def _childUnderMouse(self):
+        for w in self.catchilds.values():
+            if w.underMouse():
+                return w
+        return None
 
 
 class _CategoryCheckbox(QWidget):
