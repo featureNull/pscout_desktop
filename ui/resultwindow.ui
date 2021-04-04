@@ -110,7 +110,7 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;12345000abcd&lt;br/&gt;&lt;/span&gt;m6 blabla blablaballabalballaalbalaab&lt;br/&gt;&lt;span style=&quot; text-decoration: underline;&quot;&gt;open Trac&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            <string></string>
            </property>
            <property name="wordWrap">
             <bool>true</bool>

@@ -71,28 +71,8 @@ message OpenSessionRequest {
     // jpg data
     bytes image_data = 1;
 
-    // fov (16, 25, 35)
-    // 0 for unused
-    int32 fov = 2;
-
-    // pixels per mm
-    // 0 for unused
-    float ppmm = 3;
-
-    // wie denkt das smart phone, wie genau das photo ist
-    // UNKNOWN_SIZE = 0x00
-    // SIZE_ACCURATELY = 0x01
-    // SIZE_LESS_ACCURATE = 0x02
-    // SIZE_INACCURATE = 0x03
-    // SIZE_COULD_BE_BIGGER = 0x10
-    // SIZE_COULD_BE_SMALLER = 0x20
-    int32 size_flags = 4;
-
     // device name (samsung...)
     string device_name = 5;        
-
-    // focus abstand zu objekt (optional) 0 for unused
-    float lens_focus_distance = 6;
 }
 
 //
@@ -190,5 +170,23 @@ message SearchCandidatesReply {
 message OldStyleMatchingRequest {
     /// muss 512x512 mit alpha sein
     bytes image_data = 1;
+
 	repeated int64 filteredmodelids = 2;
+
+    // fov (16, 25, 35)
+    // 0 for unused
+    int32 fov = 3;
+
+    // pixels per mm
+    // 0 for unused
+    float ppmm = 4;
+
+    // wie denkt das smart phone, wie genau das photo ist
+    // UNKNOWN_SIZE = 0x00
+    // SIZE_ACCURATELY = 0x01
+    // SIZE_LESS_ACCURATE = 0x02
+    // SIZE_INACCURATE = 0x03
+    // SIZE_COULD_BE_BIGGER = 0x10
+    // SIZE_COULD_BE_SMALLER = 0x20
+    int32 size_flags = 5;
 }

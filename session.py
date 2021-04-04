@@ -3,8 +3,16 @@ import matching_pb2 as pb2
 import matching_pb2_grpc as pb2_grpc
 from PyQt5.QtCore import QByteArray, QBuffer, QIODevice, QPointF, QRectF, QRect
 from PyQt5.QtGui import QPolygonF, QPixmap
+from enum import Enum
 
 Stup = pb2_grpc.MatcherStub
+
+
+class SizeFlags(Enum):
+    UNKNOWN = 0x00
+    ACCURATELY = 0x01
+    LESS_ACCURATE = 0x02
+    INACCURATE = 0x03
 
 
 class SessionManager(QObject):
@@ -22,6 +30,8 @@ class SessionManager(QObject):
         self._channel = channel
         self._uuid = None
         self.pixmap = None
+        self.ppmm = None
+        self.sizeFlags = SizeFlags.UNKNOWN
 
     def open(self, pixmap):
         '''opens new image session'''
@@ -38,7 +48,8 @@ class SessionManager(QObject):
     def close(self):
         stub = Stup(self._channel)
         stub.CloseSession(pb2.SessionRequest(uuid=self._uuid))
-        self.pixmap = self.roi = self._uuid = None
+        self.ppmm = self.pixmap = self.roi = self._uuid = None
+        self.sizeFlags = SizeFlags.UNKNOWN
         self.stateChanged.emit(False)
 
     def findForeground(self, rect):

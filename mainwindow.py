@@ -1,7 +1,6 @@
 '''main window'''
 from PyQt5.QtWidgets import QMainWindow, QApplication, QShortcut, QFileDialog
 from PyQt5.QtGui import QPixmap, QKeySequence
-from PyQt5.QtCore import QRect
 from PyQt5 import QtGui
 
 from PyQt5.QtCore import Qt
@@ -15,13 +14,7 @@ class MainWindow(QMainWindow):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         uic.loadUi('./ui/mainwindow.ui', self)
-        session_mngr = QtGui.qApp.sessionManager
-        # piceditor verdrahten
-        self.picEditor.findContourRequested.connect(self.findContour)
-        self.picEditor.addContourRequested.connect(self.addContour)
-        self.picEditor.removeContourRequested.connect(self.removeContour)
         self.picEditor.modeChanged.connect(self.updateToolbaricons)
-        session_mngr.contourChanged.connect(self.picEditor.updateContour)
         # setup load image button
         self.btnLoad.clicked.connect(self.openFileNameDialog)
         self.btnLoad.setIcon(qta.icon('fa5s.folder-open', color='gray'))
@@ -38,7 +31,7 @@ class MainWindow(QMainWindow):
         self.btnCloseImage.setIcon(qta.icon('fa5s.trash-alt', color='gray'))
         self.btnCloseImage.setEnabled(False)
         self.btnCloseImage.clicked.connect(self.closePhoto)
-        session_mngr.stateChanged.connect(self.btnCloseImage.setEnabled)
+        QtGui.qApp.sessionManager.stateChanged.connect(self.btnCloseImage.setEnabled)
         # 3 right buttons
         self.btnMeasure.clicked.connect(self.enterMeasure)
         messc = QShortcut(QKeySequence('Ctrl+M'), self)
@@ -103,19 +96,6 @@ class MainWindow(QMainWindow):
 
     def enterSelectFg(self):
         self.picEditor.setMode(EditMode.FG)
-
-    def findContour(self, rc: QRect):
-        self.picEditor.setMode(EditMode.FG)
-        sm = QtGui.qApp.sessionManager
-        sm.findForeground(rc)
-
-    def addContour(self, polyline):
-        sm = QtGui.qApp.sessionManager
-        sm.addForeground(polyline)
-
-    def removeContour(self, polyline):
-        sm = QtGui.qApp.sessionManager
-        sm.removeForeground(polyline)
 
     def updateToolbaricons(self, mode):
         ctx = {

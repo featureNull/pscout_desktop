@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>210</width>
+    <width>256</width>
     <height>94</height>
    </rect>
   </property>
@@ -31,23 +31,26 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QRadioButton" name="radioButton">
+      <widget class="QRadioButton" name="btnAcc">
        <property name="text">
-        <string>Exact</string>
+        <string>Accurate</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QRadioButton" name="radioButton_2">
+      <widget class="QRadioButton" name="btnLessAcc">
        <property name="text">
-        <string>weniger</string>
+        <string>Less Accurate</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QRadioButton" name="radioButton_3">
+      <widget class="QRadioButton" name="btnInAcc">
        <property name="text">
-        <string>ungefähr</string>
+        <string>Inaccurate</string>
        </property>
       </widget>
      </item>

@@ -1,12 +1,13 @@
 '''Widget, which contains the input image.
 '''
 from enum import Enum
-from PyQt5 import uic
+from PyQt5 import QtGui, uic
 from PyQt5.QtCore import Qt, pyqtSignal, QPoint, QRect, pyqtSlot
 from PyQt5.QtGui import QPainter, QPixmap, QBrush, QColor, QTransform, QPolygonF
 from PyQt5.QtWidgets import QWidget, QToolButton, QDialog, QPushButton
 import qtawesome as qta
 from pictureoverlays import MesOverlay, RoiOverlay, ContOverlay
+import session
 
 
 class EditMode(Enum):
@@ -18,9 +19,6 @@ class EditMode(Enum):
 
 class PictureEditor(QWidget):
     modeChanged = pyqtSignal(EditMode)
-    findContourRequested = pyqtSignal(QRect)
-    addContourRequested = pyqtSignal(QPolygonF)
-    removeContourRequested = pyqtSignal(QPolygonF)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -29,32 +27,30 @@ class PictureEditor(QWidget):
         self.currentZoom = 1.0
         self.offset = QPoint(0, 0)
         self.mode = EditMode.IDLE
-
+        # overlays
         self.mesOverlay = MesOverlay(self)
         self.mesOverlay.doneCallBack = self._onMeasureDone
         self.roiOverlay = RoiOverlay(self)
         self.contOverlay = ContOverlay(self)
         self.contOverlay.freehandDone = self._onFreeHandDone
         self.overlays = [self.mesOverlay, self.roiOverlay, self.contOverlay]
-
         # eingebettete button
         self.btnContPlus = QToolButton(self)
         self.btnContPlus.setIcon(qta.icon('fa5s.plus', color='white'))
         self.btnContPlus.setStyleSheet("background-color: #19232D")
         self.btnContPlus.clicked.connect(self._onAddCountClicked)
         self.btnContPlus.hide()
-
         self.btnContMinus = QToolButton(self)
         self.btnContMinus.setIcon(qta.icon('fa5s.minus', color='white'))
         self.btnContMinus.setStyleSheet("background-color: #19232D")
         self.btnContMinus.clicked.connect(self._onRemoveCountClicked)
         self.btnContMinus.hide()
-
         self.btnFindCont = QPushButton('Find Contours', self)
         self.btnFindCont.clicked.connect(self._onFindContClicked)
         self.btnFindCont.hide()
 
-        # los gehts
+        mngr = QtGui.qApp.sessionManager
+        mngr.contourChanged.connect(self.updateContour)
         self.setMouseTracking(True)
         self.show()
 
@@ -155,11 +151,24 @@ class PictureEditor(QWidget):
 
     def _onMeasureDone(self):
         overlay = self.mesOverlay
+        mngr = QtGui.qApp.sessionManager
         dlg = uic.loadUi('./ui/mesauredistdialog.ui')
         if dlg.exec_() == QDialog.Accepted:
             overlay.lengthText = dlg.lineEdit.text() + 'mm'
+            mngr.ppmm = overlay.lineLength() / float(dlg.lineEdit.text())
+            if dlg.btnAcc.isChecked():
+                mngr.sizeFlags = session.SizeFlags.ACCURATELY
+            elif dlg.btnLessAcc.isChecked():
+                mngr.sizeFlags = session.SizeFlags.LESS_ACCURATE
+            elif dlg.btnLessAcc.btnInAcc():
+                mngr.sizeFlags = session.SizeFlags.INACCURATE
+            else:
+                mngr.sizeFlags = session.SizeFlags.UNKNOWN
         else:
+            mngr.ppmm = None
+            mngr.sizeFlags = session.SizeFlags.UNKNOWN
             overlay.reset()
+
         self.setMode(EditMode.IDLE)
 
     def _onFreeHandDone(self, mousePos):
@@ -171,21 +180,25 @@ class PictureEditor(QWidget):
         self.btnContMinus.show()
 
     def _onAddCountClicked(self):
-        self.addContourRequested.emit(self.contOverlay.freeHandPath)
+        sm = QtGui.qApp.sessionManager
+        sm.addForeground(self.contOverlay.freeHandPath)
         self.contOverlay.freeHandPath.clear()
         self.btnContPlus.hide()
         self.btnContMinus.hide()
         self.update()
 
     def _onRemoveCountClicked(self):
-        self.removeContourRequested.emit(self.contOverlay.freeHandPath)
+        sm = QtGui.qApp.sessionManager
+        sm.removeForeground(self.contOverlay.freeHandPath)
         self.contOverlay.freeHandPath.clear()
         self.btnContPlus.hide()
         self.btnContMinus.hide()
         self.update()
 
     def _onFindContClicked(self):
-        self.findContourRequested.emit(self.roiOverlay.imageRoi)
+        self.setMode(EditMode.FG)
+        sm = QtGui.qApp.sessionManager
+        sm.findForeground(self.roiOverlay.imageRoi)
 
     def getOverlay(self, mode):
         o = {

@@ -70,7 +70,7 @@ class Application(QApplication):
                 self.hidesplash()
         else:
             if (len(modelids) > 30):
-                QMessageBox.critical(self.modalWindow, 'fehler', 'zu viele Modelle ohne Bild')
+                QMessageBox.critical(self.modalWindow, 'Error', 'to much Models without Image')
                 return
         lt = QtGui.qApp.stlloadthread
         self.resultwnd = ResultWindow(modelids)
@@ -115,7 +115,14 @@ class Application(QApplication):
 
         stub = matching_pb2_grpc.MatcherStub(self.channel)
         R = matching_pb2.OldStyleMatchingRequest
-        request = R(image_data=image_data, filteredmodelids=modelids)
+        if self.sessionManager.ppmm is not None:
+            request = R(
+                image_data=image_data,
+                filteredmodelids=modelids,
+                ppmm=self.sessionManager.ppmm,
+                size_flags=self.sessionManager.sizeFlags.value)
+        else:
+            request = R(image_data=image_data, filteredmodelids=modelids)
         future = stub.OldStyleMatching.future(request)
         future.add_done_callback(process_response)
         while not done:

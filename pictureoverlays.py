@@ -4,6 +4,7 @@ from PyQt5.QtGui import QPen, QPolygonF, QColor, QFontMetrics
 from PyQt5.QtCore import QEvent, Qt, QLine, QPoint, QPointF, QRectF
 
 from enum import Enum
+import math
 from abc import ABC, abstractmethod
 import copy
 
@@ -124,6 +125,13 @@ class MesOverlay(AbstractOverlay):
         self._started = False
         self._line = None
         self.lengthText = None
+
+    def lineLength(self):
+        if self._line is None:
+            return None
+        return math.sqrt(
+            self._line.dx()**2 + self._line.dy()**2
+            )
 
 
 class Hit(Enum):
