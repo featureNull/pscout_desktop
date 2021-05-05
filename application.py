@@ -32,7 +32,7 @@ class Application(QApplication):
 
     def connectServer(self):
         # TODO settings hinzufuegen
-        #self.channel = grpc.insecure_channel('localhost:50051')
+        # self.channel = grpc.insecure_channel('localhost:50051')
         self.channel = grpc.insecure_channel('192.168.1.6:50051')
         self._load_categories()
         self._load_model_metadata()
@@ -71,7 +71,7 @@ class Application(QApplication):
                 self.hidesplash()
         else:
             if (len(modelids) > 30):
-                QMessageBox.critical(self.modalWindow, 'Error', 'to much Models without Image')
+                QMessageBox.critical(self.activeModalWidget(), 'Error', 'to much Models without Image')
                 return
         lt = QtGui.qApp.stlloadthread
         self.resultwnd = ResultWindow(modelids)

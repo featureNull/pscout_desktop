@@ -213,7 +213,6 @@ class RoiOverlay(AbstractOverlay):
                 elif hitnew == Hit.Center:
                     cursor = Qt.OpenHandCursor
                 else:
-                    print("Qt.ArrowCursor")
                     cursor = Qt.ArrowCursor
                 self.widget.setCursor(cursor)
             self._hit = hitnew
