@@ -17,10 +17,11 @@ class FilterManager(QObject):
             self.categories[metadata.categoryid].insertModel(metadata)
         # build keywords ba category and accumulate
         keywords = []
-        for metadata in modelsMetaData:
-            catkwrds = self.categories[metadata.categoryid].buildKeyWords()
+        for cat in self.categories.values():
+            catkwrds = cat.buildKeyWords()
             keywords.extend(catkwrds)
         self.keywords = list(dict.fromkeys(keywords))
+
         self.textFilters = []
 
     def addTextFilter(self, text):
