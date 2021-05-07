@@ -32,6 +32,14 @@ class CamView(QWidget):
         self._wt.error.connect(self.onCamError)
         self._wt.start()
 
+    def pauseLiveVideo(self, val):
+        if self._wt.isinit and val != self._wt.ispause:
+            if val:
+                self.cam.pause()
+            else:
+                self.cam.resume()
+        self._wt.ispause = val
+
     def onCamInitialized(self):
         len = min(self.cam.imgheight, self.cam.imgwidth)
         slidermax = 1 * 1000  # sliders sind int x1000 fuer float scale
@@ -55,6 +63,13 @@ class CamView(QWidget):
     def takeSnapshot(self):
         self.snapshot.emit(self.curFrame)
 
+    def wheelEvent(self, e):
+        d = - e.angleDelta().y()/2000.0  # des is komisches zeug
+        sldrval = self.sldrZoom.value()
+        sldrvalnew = sldrval + sldrval * d
+        self.sldrZoom.setValue(sldrvalnew)
+        self._wt.zoom = self.sldrZoom.value() / 1000
+
 
 class _WorkerThread(QThread):
     newFrame = pyqtSignal(QPixmap)
@@ -76,6 +91,8 @@ class _WorkerThread(QThread):
         try:
             self.cam.open(camera.Resolution.A_REALLY_HIGH_RES, framerate=10)
             self.camInitialized.emit()
+            if self.ispause:
+                self.cam.pause()
             self.isinit = True
         except Exception as ex:
             self.error.emit(str(ex))

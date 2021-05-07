@@ -1,5 +1,5 @@
 '''main window'''
-from PyQt5.QtWidgets import QMainWindow, QStackedWidget
+from PyQt5.QtWidgets import QMainWindow, QStackedWidget, QMessageBox
 from searchview import SearchView
 from camview import CamView
 from PyQt5.QtGui import QPixmap
@@ -15,6 +15,7 @@ class MainWindow(QMainWindow):
         self.searchview.camViewRequested.connect(self.displayCamView)
         # live video
         self.camview = CamView()
+        self.camview.pauseLiveVideo(True)
         self.camview.closeRequested.connect(self.displaySearchView)
         self.camview.snapshot.connect(self.onCamSnapshot)
         # layout
@@ -26,9 +27,11 @@ class MainWindow(QMainWindow):
         self.resize(1300, 900)
 
     def displayCamView(self):
+        self.camview.pauseLiveVideo(False)
         self.stackedwidget.setCurrentIndex(1)
 
     def displaySearchView(self):
+        self.camview.pauseLiveVideo(True)
         self.stackedwidget.setCurrentIndex(0)
 
     def onCamSnapshot(self, pixmap):
@@ -45,7 +48,10 @@ class MainWindow(QMainWindow):
         if e.mimeData().hasUrls():
             urls = e.mimeData().urls()
             pixmap = QPixmap(urls[0].toLocalFile())
-            self.searchview.loadPhoto(pixmap)
+            if pixmap.isNull():
+                QMessageBox.critical(self, 'Error', 'the object dropped is not an image')
+            else:
+                self.searchview.loadPhoto(pixmap)
             e.accept()
         else:
             e.ignore()
