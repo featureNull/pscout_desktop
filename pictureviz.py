@@ -2,7 +2,7 @@
 '''
 from enum import Enum
 from PyQt5 import QtGui, uic
-from PyQt5.QtCore import Qt, pyqtSignal, QPoint, pyqtSlot
+from PyQt5.QtCore import Qt, pyqtSignal, QPoint, pyqtSlot, QRect
 from PyQt5.QtGui import QPainter, QPixmap, QBrush, QColor, QTransform, QPolygonF
 from PyQt5.QtWidgets import QWidget, QToolButton, QDialog, QPushButton
 import qtawesome as qta
@@ -58,7 +58,12 @@ class PictureEditor(QWidget):
         self.mesOverlay.reset()
         self.photo = photo
         if roi is not None:
-            self.roiOverlay.imageRoi = roi
+            if roi.isValid():
+                self.roiOverlay.imageRoi = roi
+            else:
+                w = photo.width()
+                h = photo.height()
+                self.roiOverlay.imageRoi = QRect(w/4, h/4, w/2, h/2)
             self.setMode(EditMode.ROI)
         else:
             self.update()
