@@ -1,14 +1,13 @@
 '''search view mit filter und image content'''
-from PyQt5.QtWidgets import QWidget, QApplication, QShortcut, QFileDialog
+from PyQt5.QtWidgets import QWidget, QApplication, QShortcut
+from PyQt5.QtWidgets import QFileDialog, QMessageBox
 from PyQt5.QtGui import QPixmap, QKeySequence
-from PyQt5.QtCore import pyqtSignal
-from PyQt5 import QtGui
-
-from PyQt5.QtCore import Qt
-from PyQt5 import uic
+from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5 import QtGui, uic
 import qtawesome as qta
 from pictureviz import EditMode
 import opencv_hacks
+from settings_dialog import SettingsDialog
 
 
 class SearchView(QWidget):
@@ -48,6 +47,7 @@ class SearchView(QWidget):
         self.updateToolbaricons(EditMode.IDLE)
         # settings
         self.btnSettings.setIcon(qta.icon('fa5s.cog', color='gray'))
+        self.btnSettings.clicked.connect(self.openSettings)
 
     def openFileNameDialog(self):
         filter = 'Image files (*.jpg *.png)'
@@ -85,6 +85,21 @@ class SearchView(QWidget):
 
     def enterSelectFg(self):
         self.picEditor.setMode(EditMode.FG)
+
+    def openSettings(self):
+        s = QtGui.qApp.settings
+        dlg = SettingsDialog(s)
+        if dlg.exec_() != SettingsDialog.Accepted:
+            return
+        ns = dlg.getData()
+        if ns.connection != s.connection:
+            msg = 'Server connection changed, you should restart to reflect changes'
+            QMessageBox.information(self, 'Major changes', msg)
+        elif ns.camera_type != s.camera_type:
+            msg = 'Camera Type Changed, you should restart to reflect changes'
+            QMessageBox.information(self, 'Major changes', msg)
+        QtGui.qApp.settings = ns
+        QtGui.qApp.saveConfig()
 
     def updateToolbaricons(self, mode):
         ctx = {

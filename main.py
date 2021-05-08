@@ -1,10 +1,11 @@
 import sys
-from PyQt5.QtWidgets import QLabel
+from PyQt5.QtWidgets import QLabel, QMessageBox
 from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtCore import Qt
 import qdarkstyle
 from mainwindow import MainWindow
 from application import Application
+from settings_dialog import SettingsDialog
 
 
 def _show_splash_screen():
@@ -24,12 +25,27 @@ if __name__ == "__main__":
     style = qdarkstyle.load_stylesheet()
     app.setStyleSheet(style)
 
-    lbl = _show_splash_screen()
-    app.connectServer()
-    lbl.hide()
+    try:
+        lbl = _show_splash_screen()
+        istgutgelaufen = True
+        app.loadConfig()
+        app.connectServer()
+    except Exception as ex:
+        istgutgelaufen = False
+        QMessageBox.critical(None, "ma", str(ex))
+    finally:
+        lbl.hide()
 
-    app.mainWindow = MainWindow()
-    app.mainWindow.show()
-    app.exec_()
-
-    app.closeConnection()
+    if istgutgelaufen:
+        app.mainWindow = MainWindow()
+        app.mainWindow.show()
+        app.exec_()
+        app.closeConnection()
+    else:
+        # wenns nicht gut geht, dialog auftun, dass man connection aendern kann
+        dlg = SettingsDialog(app.settings)
+        dlg.show()
+        app.exec_()
+        if dlg.result() == SettingsDialog.Accepted:
+            app.settings = dlg.getData()
+            app.saveConfig()

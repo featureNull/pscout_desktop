@@ -12,6 +12,7 @@ from session import SessionManager
 from filter import FilterManager
 import opencv_hacks
 from resultwindow import ResultWindow
+import pscout_settings
 
 
 class Application(QApplication):
@@ -28,12 +29,22 @@ class Application(QApplication):
         self.modelsMetaData = None
         self.searchsplash = QLabel(None, Qt.SplashScreen)
         self.searchsplash.setMovie(QtGui.QMovie('./ui/gif/search_spinner.gif'))
+        self.settings = None
         QtGui.qApp = self
 
+    def loadConfig(self):
+        self.settings = pscout_settings.load_json_file('./pscout_settings.json')
+
+    def saveConfig(self):
+        pscout_settings.save_json_file('./pscout_settings.json', self.settings)
+
     def connectServer(self):
-        # TODO settings hinzufuegen
-        # self.channel = grpc.insecure_channel('localhost:50051')
-        self.channel = grpc.insecure_channel('192.168.1.6:50051')
+        cfg = self.settings.connection
+        constr = f'{cfg.ip}:{cfg.port}'
+        if cfg.use_ssl:
+            raise Exception('bitte Sebastian ssl einbauen')
+        else:
+            self.channel = grpc.insecure_channel(constr)
         self._load_categories()
         self._load_model_metadata()
         self.stlloadthread = _StlLoadThread(self.channel)
@@ -70,7 +81,7 @@ class Application(QApplication):
             finally:
                 self.hidesplash()
         else:
-            if (len(modelids) > 30):
+            if len(modelids) > self.settings.max_result_count.with_image:
                 QMessageBox.critical(self.activeModalWidget(), 'Error', 'to much Models without Image')
                 return
         lt = QtGui.qApp.stlloadthread

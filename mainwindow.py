@@ -3,32 +3,39 @@ from PyQt5.QtWidgets import QMainWindow, QStackedWidget, QMessageBox
 from searchview import SearchView
 from camview import CamView
 from PyQt5.QtGui import QPixmap
+from PyQt5 import QtGui
+import pscout_settings
 
 
 class MainWindow(QMainWindow):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.stackedwidget = QStackedWidget()
         # clipboard handling
         self.setAcceptDrops(True)
         # such view
         self.searchview = SearchView()
         self.searchview.camViewRequested.connect(self.displayCamView)
-        # live video
-        self.camview = CamView()
-        self.camview.pauseLiveVideo(True)
-        self.camview.closeRequested.connect(self.displaySearchView)
-        self.camview.snapshot.connect(self.onCamSnapshot)
-        # layout
-        self.stackedwidget = QStackedWidget()
         self.stackedwidget.addWidget(self.searchview)
-        self.stackedwidget.addWidget(self.camview)
+        # live video
+        if QtGui.qApp.settings.camera_type != pscout_settings.NO_CAMERA:
+            self.camview = CamView()
+            self.camview.pauseLiveVideo(True)
+            self.camview.closeRequested.connect(self.displaySearchView)
+            self.camview.snapshot.connect(self.onCamSnapshot)
+            self.stackedwidget.addWidget(self.camview)
+        # layout
         self.stackedwidget.setCurrentIndex(0)
         self.setCentralWidget(self.stackedwidget)
         self.resize(1300, 900)
 
     def displayCamView(self):
-        self.camview.pauseLiveVideo(False)
-        self.stackedwidget.setCurrentIndex(1)
+        camavail = QtGui.qApp.settings.camera_type != pscout_settings.NO_CAMERA
+        if camavail:
+            self.camview.pauseLiveVideo(False)
+            self.stackedwidget.setCurrentIndex(1)
+        else:
+            QMessageBox.information(self, 'Camera', 'no Camera availible')
 
     def displaySearchView(self):
         self.camview.pauseLiveVideo(True)

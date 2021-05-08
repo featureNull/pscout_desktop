@@ -1,0 +1,15 @@
+{
+    "max_result_count": {
+        "with_image": 65,
+        "without_image": 67
+    },
+    "default_disabled_categroies": [],
+    "connection": {
+        "ip": "192.168.1.6",
+        "port": 50051,
+        "use_ssl": false,
+        "certificate": "D:/asossdev/pscout_server/pyserver/ssl/certificate.pem",
+        "key": "D:/asossdev/pscout_server/pyserver/ssl/key.pem"
+    },
+    "camera_type": 1
+}
