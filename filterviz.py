@@ -42,8 +42,13 @@ class _CategoryGroup(QFrame):
         layout = QVBoxLayout()
         layout.setSpacing(2)
         self.catchilds = {}
+        disabled_cats = QtGui.qApp.settings.default_disabled_categroies
         for id, cat in manager.categories.items():
             w = _CategoryCheckbox(cat)
+            # bissl quick hacki
+            enabled = cat.shortname not in disabled_cats
+            cat.enabled = enabled
+            w.btn.setChecked(enabled)
             w.enabledChanged.connect(self._onCheckerEnableChanged)
             self.catchilds[id] = w
             layout.addWidget(w)
@@ -65,11 +70,19 @@ class _CategoryGroup(QFrame):
         if wunderm is None:
             return
         menu = QMenu(self)
+        def_ = menu.addAction('Default')
+        menu.addSeparator()
         sa = menu.addAction('Select All')
         sot = menu.addAction('Select Only This')
         sabt = menu.addAction('Select All, But This')
         mres = menu.exec(QtGui.QCursor.pos())
-        if mres == sa:
+        if mres == def_:
+            for cbx in self.catchilds.values():
+                disabled_cats = QtGui.qApp.settings.default_disabled_categroies
+                enabled = cbx.cat.shortname not in disabled_cats
+                cbx.cat.enabled = enabled
+                cbx.btn.setChecked(enabled)
+        elif mres == sa:
             for cbx in self.catchilds.values():
                 cbx.cat.enabled = True
                 cbx.btn.setChecked(True)

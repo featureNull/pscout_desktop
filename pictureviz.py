@@ -158,14 +158,16 @@ class PictureEditor(QWidget):
         overlay = self.mesOverlay
         mngr = QtGui.qApp.sessionManager
         dlg = uic.loadUi('./ui/mesauredistdialog.ui')
-        if dlg.exec_() == QDialog.Accepted:
+        dlg.lineEdit.setValidator(QtGui.QIntValidator(0, 10000))
+        res = dlg.exec_()
+        if res == QDialog.Accepted and len(dlg.lineEdit.text()) > 0:
             overlay.lengthText = dlg.lineEdit.text() + 'mm'
             mngr.ppmm = overlay.lineLength() / float(dlg.lineEdit.text())
             if dlg.btnAcc.isChecked():
                 mngr.sizeFlags = session.SizeFlags.ACCURATELY
             elif dlg.btnLessAcc.isChecked():
                 mngr.sizeFlags = session.SizeFlags.LESS_ACCURATE
-            elif dlg.btnLessAcc.btnInAcc():
+            elif dlg.btnInAcc.isChecked():
                 mngr.sizeFlags = session.SizeFlags.INACCURATE
             else:
                 mngr.sizeFlags = session.SizeFlags.UNKNOWN

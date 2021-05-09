@@ -180,7 +180,7 @@ class Ui_Form(object):
 #endif // QT_CONFIG(tooltip)
         self.btnCamera.setText(QCoreApplication.translate("Form", u"...", None))
 #if QT_CONFIG(tooltip)
-        self.btnMeasure.setToolTip(QCoreApplication.translate("Form", u"<html><head/><body><p>Measure Distance<br/></p></body></html>", None))
+        self.btnMeasure.setToolTip(QCoreApplication.translate("Form", u"Measure Distance", None))
 #endif // QT_CONFIG(tooltip)
         self.btnMeasure.setText(QCoreApplication.translate("Form", u"...", None))
 #if QT_CONFIG(tooltip)
@@ -193,7 +193,7 @@ class Ui_Form(object):
         self.btnCutForeground.setText(QCoreApplication.translate("Form", u"...", None))
         self.btnSearch.setText(QCoreApplication.translate("Form", u"  Search", None))
 #if QT_CONFIG(tooltip)
-        self.btnSettings.setToolTip(QCoreApplication.translate("Form", u"<html><head/><body><p>copy from clipboard<br/><span style=\" font-weight:600;\">Ctrl+'V</span>'</p></body></html>", None))
+        self.btnSettings.setToolTip(QCoreApplication.translate("Form", u"Settings", None))
 #endif // QT_CONFIG(tooltip)
         self.btnSettings.setText(QCoreApplication.translate("Form", u"...", None))
     # retranslateUi

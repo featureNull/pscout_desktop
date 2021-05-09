@@ -72,6 +72,7 @@ class SearchView(QWidget):
         self.picEditor.setMode(EditMode.IDLE)
         QtGui.qApp.sessionManager.close()
         self.picEditor.setPhoto(None)
+        self.updateToolbaricons(EditMode.IDLE)
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Escape:
@@ -107,7 +108,9 @@ class SearchView(QWidget):
             EditMode.ROI: [self.btnRegion, 'fa5s.vector-square'],
             EditMode.FG: [self.btnCutForeground, 'fa5s.draw-polygon']
         }
+        hasphoto = self.picEditor.photo is not None
         for key in ctx.keys():
             color = 'white' if key == mode else 'gray'
             icon = qta.icon(ctx[key][1], color=color)
             ctx[key][0].setIcon(icon)
+            ctx[key][0].setEnabled(hasphoto)

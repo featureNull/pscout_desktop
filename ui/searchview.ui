@@ -168,7 +168,7 @@
         </size>
        </property>
        <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Measure Distance&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>Measure Distance</string>
        </property>
        <property name="text">
         <string>...</string>
@@ -289,7 +289,7 @@
         </size>
        </property>
        <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;copy from clipboard&lt;br/&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Ctrl+'V&lt;/span&gt;'&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>Settings</string>
        </property>
        <property name="text">
         <string>...</string>
