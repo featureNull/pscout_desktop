@@ -1,0 +1,797 @@
+﻿
+[Header]
+ProjectFileVersion = 1.1
+[General]
+Program name = PartScout
+Program version = 1.0.0
+Windows 2000 = 0
+Windows XP = 0
+Windows Server 2003 = 0
+Windows Vista = 0
+Windows Server 2008 = 0
+Windows 7 = 0
+Windows 8 = 1
+Windows 10 = 1
+Windows Server 2016 = 0
+DoNotCheckOS = 0
+Company name = Asoss GmbH
+Website = https://partscout.io/
+SFA = 0
+DFA = 0
+Comp = 1
+[Graphics]
+Wizard image = D:\GitHub\pscout_desktop\setup\images\Wiz.bmp
+Header image = D:\GitHub\pscout_desktop\setup\images\logo.bmp
+Show Label = 1
+VisualStylesEnabled = 1
+[Files]
+Installation path = C:\Program Files\<Company>\<AppName>\
+Autcip = 1
+[Uninstall]
+Vwau = 0
+Website = https://
+Include uninstaller = 1
+Uninstaller filename = Uninstall
+UseCustomDisplayIcon = 0
+CustomDisplayIcon = <InstallPath>\
+[Licence]
+Licence dialog = 0
+[Finish]
+Sart program = 1
+Reboot computer = 0
+Program = <InstallPath>\PartScout.exe
+ProgramArguments = 
+[Shortcuts]
+Allowtc = 0
+Shortcut path = <Company>\<AppName>\
+[Serialoptions]
+Allows = 0
+Number = 1000
+Mask = #####-#####-#####-#####
+[SplashScreen]
+Image = 
+Sound = 
+Time = 2
+PlaySound = 0
+Allow = 0
+[Build]
+File = D:\GitHub\pscout_desktop\setup\PartScout.exe
+SetupIconPath = C:\Program Files (x86)\solicus\InstallForge\icons\modern.ico
+UninstallIconPath = C:\Program Files (x86)\solicus\InstallForge\icons\modern.ico
+CompressionMethod = 1
+CompressionLevel = 1
+[Updater]
+Allow = 0
+1 = <AppName>
+2 = <AppVersion>
+3 = http://
+4 = http://
+5 = http://
+6 = Update
+Language = 0
+RunProg = 
+RunProgs = 0
+Execdlls = 0
+[Languages]
+1
+[Files/Dirs]
+D:\GitHub\pscout_desktop\dist\main\_asyncio.pyd
+63.6 KB
+pyd
+D:\GitHub\pscout_desktop\dist\main\_bz2.pyd
+85.6 KB
+pyd
+D:\GitHub\pscout_desktop\dist\main\_ctypes.pyd
+124.1 KB
+pyd
+D:\GitHub\pscout_desktop\dist\main\_decimal.pyd
+263.1 KB
+pyd
+D:\GitHub\pscout_desktop\dist\main\_elementtree.pyd
+174.1 KB
+pyd
+D:\GitHub\pscout_desktop\dist\main\_hashlib.pyd
+46.6 KB
+pyd
+D:\GitHub\pscout_desktop\dist\main\_lzma.pyd
+160.1 KB
+pyd
+D:\GitHub\pscout_desktop\dist\main\_multiprocessing.pyd
+30.1 KB
+pyd
+D:\GitHub\pscout_desktop\dist\main\_overlapped.pyd
+46.1 KB
+pyd
+D:\GitHub\pscout_desktop\dist\main\_queue.pyd
+29.1 KB
+pyd
+D:\GitHub\pscout_desktop\dist\main\_socket.pyd
+78.1 KB
+pyd
+D:\GitHub\pscout_desktop\dist\main\_ssl.pyd
+151.6 KB
+pyd
+D:\GitHub\pscout_desktop\dist\main\_tkinter.pyd
+64.1 KB
+pyd
+D:\GitHub\pscout_desktop\dist\main\api-ms-win-core-console-l1-1-0.dll
+18.7 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\api-ms-win-core-datetime-l1-1-0.dll
+18.2 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\api-ms-win-core-debug-l1-1-0.dll
+18.2 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\api-ms-win-core-errorhandling-l1-1-0.dll
+18.2 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\api-ms-win-core-file-l1-1-0.dll
+21.7 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\api-ms-win-core-file-l1-2-0.dll
+18.2 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\api-ms-win-core-file-l2-1-0.dll
+18.2 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\api-ms-win-core-handle-l1-1-0.dll
+18.2 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\api-ms-win-core-heap-l1-1-0.dll
+18.7 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\api-ms-win-core-interlocked-l1-1-0.dll
+18.2 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\api-ms-win-core-libraryloader-l1-1-0.dll
+18.7 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\api-ms-win-core-localization-l1-2-0.dll
+20.7 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\api-ms-win-core-memory-l1-1-0.dll
+18.7 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\api-ms-win-core-namedpipe-l1-1-0.dll
+18.2 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\api-ms-win-core-processenvironment-l1-1-0.dll
+19.2 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\api-ms-win-core-processthreads-l1-1-0.dll
+20.2 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\api-ms-win-core-processthreads-l1-1-1.dll
+18.7 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\api-ms-win-core-profile-l1-1-0.dll
+17.7 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\api-ms-win-core-rtlsupport-l1-1-0.dll
+18.7 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\api-ms-win-core-string-l1-1-0.dll
+18.2 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\api-ms-win-core-synch-l1-1-0.dll
+20.2 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\api-ms-win-core-synch-l1-2-0.dll
+18.7 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\api-ms-win-core-sysinfo-l1-1-0.dll
+19.2 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\api-ms-win-core-timezone-l1-1-0.dll
+18.2 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\api-ms-win-core-util-l1-1-0.dll
+18.2 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\api-ms-win-crt-conio-l1-1-0.dll
+19.2 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\api-ms-win-crt-convert-l1-1-0.dll
+22.2 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\api-ms-win-crt-environment-l1-1-0.dll
+18.7 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\api-ms-win-crt-filesystem-l1-1-0.dll
+20.2 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\api-ms-win-crt-heap-l1-1-0.dll
+19.2 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\api-ms-win-crt-locale-l1-1-0.dll
+18.7 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\api-ms-win-crt-math-l1-1-0.dll
+27.2 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\api-ms-win-crt-process-l1-1-0.dll
+19.2 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\api-ms-win-crt-runtime-l1-1-0.dll
+22.7 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\api-ms-win-crt-stdio-l1-1-0.dll
+24.2 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\api-ms-win-crt-string-l1-1-0.dll
+24.2 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\api-ms-win-crt-time-l1-1-0.dll
+20.7 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\api-ms-win-crt-utility-l1-1-0.dll
+18.7 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\base_library.zip
+760.4 KB
+zip
+D:\GitHub\pscout_desktop\dist\main\d3dcompiler_47.dll
+4 MB
+dll
+D:\GitHub\pscout_desktop\dist\main\libcrypto-1_1.dll
+3.2 MB
+dll
+D:\GitHub\pscout_desktop\dist\main\libEGL.dll
+24.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\libffi-7.dll
+32 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\libGLESv2.dll
+3.2 MB
+dll
+D:\GitHub\pscout_desktop\dist\main\libopenblas.GK7GX5KEQ4F6UYO3P26ULGBQYHGQO7J4.gfortran-win_amd64.dll
+32.8 MB
+dll
+D:\GitHub\pscout_desktop\dist\main\libssl-1_1.dll
+673 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\MSVCP140.dll
+576.3 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\MSVCP140_1.dll
+31 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\opengl32sw.dll
+20 MB
+dll
+D:\GitHub\pscout_desktop\dist\main\PartScout.exe
+4.6 MB
+exe
+D:\GitHub\pscout_desktop\dist\main\PartScout.exe.manifest
+1.5 KB
+manifest
+D:\GitHub\pscout_desktop\dist\main\pscout_settings.json
+416 Byte
+json
+D:\GitHub\pscout_desktop\dist\main\pyexpat.pyd
+186.1 KB
+pyd
+D:\GitHub\pscout_desktop\dist\main\python3.dll
+58.6 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\python38.dll
+4 MB
+dll
+D:\GitHub\pscout_desktop\dist\main\Qt5Core.dll
+5.7 MB
+dll
+D:\GitHub\pscout_desktop\dist\main\Qt5DBus.dll
+426.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\Qt5Gui.dll
+6.7 MB
+dll
+D:\GitHub\pscout_desktop\dist\main\Qt5Network.dll
+1.3 MB
+dll
+D:\GitHub\pscout_desktop\dist\main\Qt5OpenGL.dll
+313.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\Qt5Qml.dll
+3.4 MB
+dll
+D:\GitHub\pscout_desktop\dist\main\Qt5QmlModels.dll
+428.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\Qt5Quick.dll
+4 MB
+dll
+D:\GitHub\pscout_desktop\dist\main\Qt5Svg.dll
+323 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\Qt5WebSockets.dll
+146 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\Qt5Widgets.dll
+5.2 MB
+dll
+D:\GitHub\pscout_desktop\dist\main\select.pyd
+27.6 KB
+pyd
+D:\GitHub\pscout_desktop\dist\main\tcl86t.dll
+1.6 MB
+dll
+D:\GitHub\pscout_desktop\dist\main\tk86t.dll
+1.4 MB
+dll
+D:\GitHub\pscout_desktop\dist\main\ucrtbase.dll
+969.7 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\unicodedata.pyd
+1 MB
+pyd
+D:\GitHub\pscout_desktop\dist\main\VCRUNTIME140.dll
+91.9 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\VCRUNTIME140_1.dll
+35.9 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkChartsCore.dll
+948 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkCommonColor.dll
+108.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkCommonComputationalGeometry.dll
+163 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkCommonCore.dll
+3.9 MB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkCommonDataModel.dll
+3.3 MB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkCommonExecutionModel.dll
+651 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkCommonMath.dll
+121 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkCommonMisc.dll
+118.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkCommonPython.dll
+24.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkCommonSystem.dll
+95 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkCommonTransforms.dll
+174.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkDICOMParser.dll
+109.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkDomainsChemistry.dll
+324.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkdoubleconversion.dll
+67.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkexodusII.dll
+307 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkexpat.dll
+141.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkFiltersAMR.dll
+139.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkFiltersCore.dll
+3.6 MB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkFiltersExtraction.dll
+1.1 MB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkFiltersFlowPaths.dll
+426.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkFiltersGeneral.dll
+2.4 MB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkFiltersGeneric.dll
+138.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkFiltersGeometry.dll
+407 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkFiltersHybrid.dll
+724 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkFiltersHyperTree.dll
+198.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkFiltersImaging.dll
+88.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkFiltersModeling.dll
+479 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkFiltersParallel.dll
+703.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkFiltersParallelImaging.dll
+77 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkFiltersPoints.dll
+714 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkFiltersProgrammable.dll
+47.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkFiltersPython.dll
+28.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkFiltersSelection.dll
+67 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkFiltersSMP.dll
+403.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkFiltersSources.dll
+520.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkFiltersStatistics.dll
+707.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkFiltersTexture.dll
+88 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkFiltersTopology.dll
+33 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkFiltersVerdict.dll
+105 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkfreetype.dll
+533.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkGeovisCore.dll
+89.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkgl2ps.dll
+93 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkglew.dll
+444 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkhdf5.dll
+3 MB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkhdf5_hl.dll
+119.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkImagingColor.dll
+225 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkImagingCore.dll
+1.3 MB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkImagingFourier.dll
+114.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkImagingGeneral.dll
+609 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkImagingHybrid.dll
+321 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkImagingMath.dll
+190.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkImagingMorphological.dll
+333.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkImagingSources.dll
+175 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkImagingStatistics.dll
+118.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkImagingStencil.dll
+129.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkInfovisCore.dll
+854 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkInfovisLayout.dll
+385 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkInteractionImage.dll
+69.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkInteractionStyle.dll
+209 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkInteractionWidgets.dll
+1.7 MB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkIOAMR.dll
+307.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkIOAsynchronous.dll
+57.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkIOCityGML.dll
+121 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkIOCore.dll
+366.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkIOEnSight.dll
+390.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkIOExodus.dll
+606.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkIOExport.dll
+551 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkIOExportGL2PS.dll
+53 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkIOExportPDF.dll
+103.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkIOGeometry.dll
+1.4 MB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkIOImage.dll
+1.1 MB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkIOImport.dll
+302 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkIOInfovis.dll
+353.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkIOLegacy.dll
+464.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkIOLSDyna.dll
+292 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkIOMINC.dll
+302.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkIOMovie.dll
+38.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkIONetCDF.dll
+370 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkIOOggTheora.dll
+39 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkIOParallel.dll
+333 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkIOParallelXML.dll
+142 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkIOPLY.dll
+113.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkIOSegY.dll
+62 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkIOSQL.dll
+226 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkIOTecplotTable.dll
+59 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkIOVeraOut.dll
+63 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkIOVideo.dll
+65 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkIOXML.dll
+774.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkIOXMLParser.dll
+100 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkjpeg.dll
+397.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkjsoncpp.dll
+251 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtklibharu.dll
+697.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtklibproj.dll
+321 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtklibxml2.dll
+1.2 MB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkloguru.dll
+66.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtklz4.dll
+99 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtklzma.dll
+150 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkmetaio.dll
+580 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtknetcdf.dll
+715.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkogg.dll
+30.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkParallelCore.dll
+324.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkParallelDIY.dll
+41.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkpng.dll
+191.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkpugixml.dll
+176.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkPythonContext2D.dll
+26 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkRenderingAnnotation.dll
+751.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkRenderingContext2D.dll
+208.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkRenderingCore.dll
+1.6 MB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkRenderingFreeType.dll
+643.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkRenderingGL2PSOpenGL2.dll
+64.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkRenderingImage.dll
+142.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkRenderingLabel.dll
+467.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkRenderingLOD.dll
+44 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkRenderingOpenGL2.dll
+1.8 MB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkRenderingSceneGraph.dll
+77 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkRenderingUI.dll
+73 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkRenderingVolume.dll
+1.9 MB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkRenderingVolumeOpenGL2.dll
+447 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkRenderingVtkJS.dll
+143 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtksqlite.dll
+823.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtksys.dll
+316.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkTestingRendering.dll
+87.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtktheora.dll
+204 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtktiff.dll
+401.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkverdict.dll
+153 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkViewsContext2D.dll
+42 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkViewsCore.dll
+120.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkViewsInfovis.dll
+557 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkWrappingPythonCore.dll
+214.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\vtkzlib.dll
+84.5 KB
+dll
+D:\GitHub\pscout_desktop\dist\main\_pydevd_bundle\
+N/A
+[Folder]
+D:\GitHub\pscout_desktop\dist\main\_pydevd_frame_eval\
+N/A
+[Folder]
+D:\GitHub\pscout_desktop\dist\main\cv2\
+N/A
+[Folder]
+D:\GitHub\pscout_desktop\dist\main\grpc\
+N/A
+[Folder]
+D:\GitHub\pscout_desktop\dist\main\grpc_tools\
+N/A
+[Folder]
+D:\GitHub\pscout_desktop\dist\main\numpy\
+N/A
+[Folder]
+D:\GitHub\pscout_desktop\dist\main\PyQt5\
+N/A
+[Folder]
+D:\GitHub\pscout_desktop\dist\main\qtawesome\
+N/A
+[Folder]
+D:\GitHub\pscout_desktop\dist\main\tcl\
+N/A
+[Folder]
+D:\GitHub\pscout_desktop\dist\main\tcl8\
+N/A
+[Folder]
+D:\GitHub\pscout_desktop\dist\main\tk\
+N/A
+[Folder]
+D:\GitHub\pscout_desktop\dist\main\ui\
+N/A
+[Folder]
+D:\GitHub\pscout_desktop\dist\main\vtkmodules\
+N/A
+[Folder]
+[Licence_Begin]
+114
+{\rtf1\ansi\ansicpg1252\deff0\deflang1031{\fonttbl{\f0\fnil\fcharset0 Arial;}}
+\viewkind4\uc1\pard\fs20\par
+}
+ [Licence_End]
+[Registry]
+[Variables]
+[SCs]
+Desktop
+PartScout
+<InstallPath>\PartScout.exe
+
+
+0
+Startmenu
+PartScout
+<InstallPath>\PartScout.exe
+
+
+0
+[IFP_End]
+[Serials]
+[Serials_End]
+[Commands]
+Shell Execute
+MKDIR "%USERPROFILE%\AppData\Roaming\PartScout"
+
+
+Shell Execute
+COPY /Y "<InstallPath>\pscout_settings.json" "%USERPROFILE%\AppData\Roaming\PartScout\"
+
+
