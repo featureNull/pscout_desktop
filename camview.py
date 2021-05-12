@@ -5,10 +5,9 @@ from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtCore import QThread, pyqtSignal
 import qtawesome as qta
 import camera
-from camera.idscam import IdsCam
 import cv2
 
-DEBUG = True
+DEBUG = False
 
 
 class CamView(QWidget):
@@ -25,6 +24,7 @@ class CamView(QWidget):
         self.btnSnapshot.clicked.connect(self.takeSnapshot)
         self.btnSnapshot.setDisabled(True)
         self.curFrame = QPixmap()
+        from camera.idscam import IdsCam
         self.cam = IdsCam()
         self._wt = _WorkerThread(self.cam)
         self._wt.newFrame.connect(self.onNewFrame)

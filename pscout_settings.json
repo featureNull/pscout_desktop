@@ -3,12 +3,9 @@
         "with_image": 22,
         "without_image": 14
     },
-    "default_disabled_categroies": [
-        "",
-        "MUN"
-    ],
+    "default_disabled_categroies": [],
     "connection": {
-        "ip": "192.168.1.6",
+        "ip": "10.143.36.154",
         "port": 50051,
         "use_ssl": false,
         "certificate": "D:/asossdev/pscout_server/pyserver/ssl/certificate.pem",
