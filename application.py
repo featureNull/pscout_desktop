@@ -3,6 +3,7 @@
 from PyQt5.QtCore import QThread, pyqtSignal, Qt
 from PyQt5.QtWidgets import QApplication, QMessageBox, QLabel
 from PyQt5 import QtGui
+import os
 import grpc
 import metadata_pb2
 import metadata_pb2_grpc
@@ -33,10 +34,12 @@ class Application(QApplication):
         QtGui.qApp = self
 
     def loadConfig(self):
-        self.settings = pscout_settings.load_json_file('./pscout_settings.json')
+        appdata = os.getenv("APPDATA")
+        self.settings = pscout_settings.load_json_file(appdata + '/PartScout/pscout_settings.json')
 
     def saveConfig(self):
-        pscout_settings.save_json_file('./pscout_settings.json', self.settings)
+        appdata = os.getenv("APPDATA")
+        pscout_settings.save_json_file(appdata + './PartScout/pscout_settings.json', self.settings)
 
     def connectServer(self):
         cfg = self.settings.connection
