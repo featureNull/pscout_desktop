@@ -4,6 +4,7 @@ from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtCore import Qt
 import qdarkstyle
 from mainwindow import MainWindow
+from resultwindow_neu import ResultWindowNeu
 from application import Application
 from settings_dialog import SettingsDialog
 
@@ -37,7 +38,8 @@ if __name__ == "__main__":
         lbl.hide()
 
     if istgutgelaufen:
-        app.mainWindow = MainWindow()
+        app.mainWindow = ResultWindowNeu()
+        #app.mainWindow = MainWindow()
         app.mainWindow.show()
         app.exec_()
         app.closeConnection()

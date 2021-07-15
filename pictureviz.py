@@ -6,7 +6,7 @@ from PyQt5.QtCore import Qt, pyqtSignal, QPoint, pyqtSlot, QRect
 from PyQt5.QtGui import QPainter, QPixmap, QBrush, QColor, QTransform, QPolygonF
 from PyQt5.QtWidgets import QWidget, QToolButton, QDialog, QPushButton
 import qtawesome as qta
-from pictureoverlays import MesOverlay, RoiOverlay, ContOverlay
+from searchview.pictureoverlays import MesOverlay, RoiOverlay, ContOverlay
 import session
 
 

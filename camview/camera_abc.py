@@ -1,6 +1,7 @@
 from enum import Enum
 from abc import ABC, abstractmethod
 
+
 class Resolution(Enum):
     A_REALLY_HIGH_RES = 1
 

@@ -13,7 +13,7 @@ from PySide2.QtGui import *
 from PySide2.QtWidgets import *
 
 from pictureviz import PictureEditor
-from filterviz import FilterWidget
+from searchview.filterviz import FilterWidget
 
 
 class Ui_Form(object):

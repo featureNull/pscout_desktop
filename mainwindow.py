@@ -1,7 +1,7 @@
 '''main window'''
 from PyQt5.QtWidgets import QMainWindow, QStackedWidget, QMessageBox
-from searchview import SearchView
-from camview import CamView
+from searchview.searchview import SearchView
+from camview.camview import CamView
 from PyQt5.QtGui import QPixmap
 from PyQt5 import QtGui
 import pscout_settings

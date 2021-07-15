@@ -4,8 +4,7 @@ from PyQt5.QtWidgets import QWidget, QMessageBox
 from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtCore import QThread, pyqtSignal
 import qtawesome as qta
-import camera
-from camera.idscam import IdsCam
+from camview.idscam import IdsCam
 import cv2
 
 DEBUG = True
@@ -17,7 +16,7 @@ class CamView(QWidget):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        uic.loadUi('./ui/camview.ui', self)
+        uic.loadUi('./camview/camview.ui', self)
         self.sldrZoom.setDisabled(True)
         self.btnClose.clicked.connect(self.closeRequested)
         self.btnClose.setIcon(qta.icon('fa5s.times', color='gray'))

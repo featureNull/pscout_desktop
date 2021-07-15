@@ -2,6 +2,13 @@ from PyQt5.QtCore import QObject, pyqtSignal
 import re
 
 
+'''
+enum 
+class massfilter
+  
+'''
+
+
 class FilterManager(QObject):
     # anzahl moedlle in einer catogry geaendert (id, anzahl)
     changed = pyqtSignal()
@@ -31,6 +38,9 @@ class FilterManager(QObject):
     def removeTextFilter(self, text):
         self.textFilters.remove(text)
         self.changed.emit()
+    
+    #def addMassFilter(self, )
+    # 
 
     @property
     def anyfilterActive(self) -> bool:

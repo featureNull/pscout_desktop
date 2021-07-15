@@ -15,7 +15,7 @@ class SearchView(QWidget):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        uic.loadUi('./ui/searchview.ui', self)
+        uic.loadUi('./searchview/searchview.ui', self)
         self.picEditor.modeChanged.connect(self.updateToolbaricons)
         # setup load image button
         self.btnLoad.clicked.connect(self.openFileNameDialog)

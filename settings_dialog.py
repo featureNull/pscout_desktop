@@ -8,6 +8,7 @@ from collections import namedtuple
 
 Cat = namedtuple('Cat', ['shortname', 'item'])
 
+
 class SettingsDialog(QDialog):
     def __init__(self, settings):
         super().__init__()

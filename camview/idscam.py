@@ -1,7 +1,7 @@
 '''
 Ids Usb 2 Kamera
 '''
-from . import AbstractCam, Resolution
+from camview.camera_abc import AbstractCam, Resolution
 from pyueye import ueye
 import numpy as np
 import cv2
