@@ -81,7 +81,7 @@ class Application(QApplication):
             finally:
                 self.hidesplash()
         else:
-            if len(modelids) > self.settings.max_result_count.with_image:
+            if len(modelids) > self.settings.max_result_count.without_image:
                 QMessageBox.critical(self.activeModalWidget(), 'Error', 'to much Models without Image')
                 return
         lt = QtGui.qApp.stlloadthread

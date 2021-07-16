@@ -1,9 +1,11 @@
 {
     "max_result_count": {
-        "with_image": 22,
-        "without_image": 14
+        "with_image": 44,
+        "without_image": 69
     },
-    "default_disabled_categroies": [],
+    "default_disabled_categroies": [
+        "MOT"
+    ],
     "connection": {
         "ip": "127.0.0.1",
         "port": 50051,

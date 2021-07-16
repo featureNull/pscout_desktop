@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QDialog, QMessageBox, QAbstractSpinBox
 from PyQt5.QtGui import QPixmap
+from PyQt5.QtCore import Qt
 from PyQt5 import uic
 from dataclasses import dataclass
 from enum import Enum
@@ -19,12 +20,12 @@ class Result:
 
 
 class DimensionFilterDialog(QDialog):
-    def __init__(self):
+    def __init__(self, shape: Shape):
         super().__init__()
         uic.loadUi('./ui/dimension_filter_dialog.ui', self)
-        self.rundPixmap = QPixmap('./ui/png/rund.png')
-        self.laengePixmap = QPixmap('./ui/png/laenge.png')
-        self.cbxShape.currentIndexChanged.connect(self.updateUiState)
+        self.shape = shape
+        iconfn = 'rund.png' if shape == Shape.DIAMETER else 'laenge.png'
+        self.lblImage.setPixmap(QPixmap(f'./ui/png/{iconfn}'))
         self.btnGreaterThan.clicked.connect(self.updateUiState)
         self.btnOk.clicked.connect(self.onOkClicked)
         self.spnbxTolerance.setStepType(QAbstractSpinBox.AdaptiveDecimalStepType)
@@ -32,17 +33,13 @@ class DimensionFilterDialog(QDialog):
         self.updateUiState()
 
     def updateUiState(self):
-        ix = self.cbxShape.currentIndex()
-        pxmap = self.laengePixmap if ix == 0 else self.rundPixmap
-        self.lblImage.setPixmap(pxmap)
         enabled = not self.btnGreaterThan.isChecked()
         self.spnbxTolerance.setEnabled(enabled)
 
     def myResult(self) -> Result:
         txt = self.lineEdit.text()
         value = float(txt.replace(',', '.'))  # deutsche tastatur
-        shape = Shape.LENGTH if self.cbxShape.currentIndex() else Shape.DIAMETER
-        r = Result(value, shape)
+        r = Result(value, self.shape)
         if self.btnGreaterThan.isChecked():
             r.greater_than = True
         else:
@@ -58,7 +55,6 @@ class DimensionFilterDialog(QDialog):
         self.spnbxTolerance.setValue(tol)
         decimals = 2 if tol > 100.0 else 1
         self.spnbxTolerance.setDecimals(decimals)
-        self.spnbxTolerance.setFocus()
 
     def onOkClicked(self):
         try:
@@ -67,3 +63,13 @@ class DimensionFilterDialog(QDialog):
             QMessageBox.critical(self, 'Dimension Filter', 'No Value given')
         else:
             self.accept()
+
+    def keyPressEvent(self, evt):
+        if evt.key() in [Qt.Key_Return, Qt.Key_Enter]:
+            if self.lineEdit.hasFocus():
+                self.spnbxTolerance.setFocus()
+                self.spnbxTolerance.selectAll()
+            elif self.spnbxTolerance.hasFocus():
+                self.btnOk.setFocus()
+            elif self.btnOk.hasFocus():
+                self.onOkClicked()

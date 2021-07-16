@@ -1,11 +1,13 @@
 '''left hand filter aerea
 '''
 from PyQt5.QtCore import pyqtSignal, Qt, QTimer
+from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import (
     QWidget, QVBoxLayout, QFrame, QToolButton, QHBoxLayout, QCheckBox, QLabel,
     QSpacerItem, QSizePolicy, QLineEdit, QCompleter, QMenu
 )
 from PyQt5 import QtGui
+from dimension_filter_dialog import DimensionFilterDialog, Shape
 import qtawesome as qta
 
 
@@ -21,9 +23,10 @@ class FilterWidget(QWidget):
         self.textfiltergroup = _TextFilterGroup()
         layout.addWidget(self.textfiltergroup)
 
-        self.searchedit = _SearchLineEdit()
-        self.searchedit.keywordEntered.connect(self.textfiltergroup.addBox)
-        layout.addWidget(self.searchedit)
+        self.searchFrame = _SearchFrame()
+        searchedit = self.searchFrame.searchLineEdit
+        searchedit.keywordEntered.connect(self.textfiltergroup.addBox)
+        layout.addWidget(self.searchFrame)
 
         # patch layout
         spacer = QSpacerItem(1, 1, QSizePolicy.Minimum, QSizePolicy.Expanding)
@@ -136,6 +139,43 @@ class _CategoryCheckbox(QWidget):
         self.enabledChanged.emit(checked)
 
 
+class _SearchFrame(QWidget):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.layout = QHBoxLayout()
+        self.layout.setContentsMargins(0, 0, 0, 0)
+        self.layout.setSpacing(0)
+        self.setLayout(self.layout)
+        self._btn = QToolButton()
+        self._btn.setIcon(qta.icon('fa5s.filter', color='lightgray'))
+        self._btn.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
+        self._btn.setStyleSheet("background-color: #19232D")
+        self._btn.setFocusPolicy(Qt.NoFocus)
+        menu = QMenu()
+        menu.addAction('length dimension', self.onLengthDimension)
+        menu.addAction('diameter dimension', self.onDiameterDimension)
+        menu.addSeparator()
+        fut = menu.addAction('enhanced text filter')
+        fut.setEnabled(False)
+
+        self._btn.setMenu(menu)
+        self._btn.setPopupMode(QToolButton.InstantPopup)
+
+        self.layout.addWidget(self._btn)
+        self.searchLineEdit = _SearchLineEdit()
+        self.layout.addWidget(self.searchLineEdit)
+
+    def onLengthDimension(self):
+        dlg = DimensionFilterDialog(Shape.LENGTH)
+        dlg.exec()
+        pass
+
+    def onDiameterDimension(self):
+        dlg = DimensionFilterDialog(Shape.DIAMETER)
+        dlg.exec()
+        pass
+
+
 class _SearchLineEdit(QLineEdit):
     '''suchfenster eingabe'''
     keywordEntered = pyqtSignal(str)
@@ -193,7 +233,11 @@ class _TextFilterBox(QFrame):
         self.setStyleSheet("background-color: #19232D")
         layout = QHBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(10)
+        layout.setSpacing(6)
+        iconLabel = QLabel()
+        iconLabel.setPixmap(QPixmap('./ui/png/text_filter.png'))
+        iconLabel.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        layout.addWidget(iconLabel)
 
         lbl = QLabel(text)
         _change_font(lbl)

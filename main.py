@@ -38,8 +38,8 @@ if __name__ == "__main__":
         lbl.hide()
 
     if istgutgelaufen:
-        app.mainWindow = ResultWindowNeu()
-        #app.mainWindow = MainWindow()
+        #app.mainWindow = ResultWindowNeu()
+        app.mainWindow = MainWindow()
         app.mainWindow.show()
         app.exec_()
         app.closeConnection()

@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>353</width>
-    <height>190</height>
+    <width>359</width>
+    <height>181</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -25,61 +25,27 @@
      <item>
       <layout class="QFormLayout" name="formLayout">
        <item row="0" column="0">
-        <widget class="QLabel" name="lblShape">
-         <property name="text">
-          <string>Shape</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QComboBox" name="cbxShape">
-         <property name="focusPolicy">
-          <enum>Qt::NoFocus</enum>
-         </property>
-         <item>
-          <property name="text">
-           <string>Length</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Diameter</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item row="1" column="0">
         <widget class="QLabel" name="lblValue">
          <property name="text">
           <string>Value [mm]</string>
          </property>
         </widget>
        </item>
-       <item row="1" column="1">
+       <item row="0" column="1">
         <widget class="QLineEdit" name="lineEdit">
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
         </widget>
        </item>
-       <item row="2" column="0">
+       <item row="1" column="0">
         <widget class="QLabel" name="lblTolerance">
          <property name="text">
           <string>Tolerance [mm]</string>
          </property>
         </widget>
        </item>
-       <item row="3" column="0" colspan="2">
-        <widget class="QCheckBox" name="btnGreaterThan">
-         <property name="focusPolicy">
-          <enum>Qt::NoFocus</enum>
-         </property>
-         <property name="text">
-          <string>greater than</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
+       <item row="1" column="1">
         <widget class="QDoubleSpinBox" name="spnbxTolerance">
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -89,6 +55,16 @@
          </property>
          <property name="value">
           <double>1.000000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0" colspan="2">
+        <widget class="QCheckBox" name="btnGreaterThan">
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
+         <property name="text">
+          <string>greater than</string>
          </property>
         </widget>
        </item>
@@ -149,17 +125,20 @@
      <item>
       <widget class="QPushButton" name="btnOk">
        <property name="focusPolicy">
-        <enum>Qt::NoFocus</enum>
+        <enum>Qt::TabFocus</enum>
        </property>
        <property name="text">
         <string>Ok</string>
+       </property>
+       <property name="autoDefault">
+        <bool>false</bool>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="btnCancel">
        <property name="focusPolicy">
-        <enum>Qt::NoFocus</enum>
+        <enum>Qt::TabFocus</enum>
        </property>
        <property name="text">
         <string>Cancel</string>
